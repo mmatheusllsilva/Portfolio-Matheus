@@ -29,7 +29,11 @@ export default async function handler(req, res) {
         if (response.ok && data.choices) {
             res.status(200).json({ response: data.choices[0].message.content });
         } else {
-            res.status(500).json({ response: "Erro na resposta da IA." });
+            console.log("Erro Groq:", JSON.stringify(data));
+            res.status(500).json({ 
+                response: "Erro na resposta da IA.", 
+                debug: data 
+            });
         }
     } catch (error) {
         res.status(500).json({ response: "Erro interno: " + error.message });
