@@ -1,892 +1,276 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matheus Lopes | IA & Automação</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- EmailJS -->
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <style>
-        :root { --glass: rgba(10, 15, 20, 0.75); --glass-border: rgba(255, 255, 255, 0.15); --accent: #00d1ff; }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', sans-serif; }
-        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #000; color: white; }
-
-        @keyframes fadeInPage { from { opacity: 0; filter: blur(10px); } to { opacity: 1; filter: blur(0); }}
-        @keyframes slideUp    { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; }}
-        @keyframes pulse      { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; }}
-        @keyframes tutorialPop{ from { opacity:0; transform:translateY(20px) scale(0.95);} to {opacity:1; transform:translateY(0) scale(1);}}
-        @keyframes spotlightPulse { 0%,100%{box-shadow:0 0 0 4000px rgba(0,0,0,0.82),0 0 0 3px var(--accent),0 0 25px rgba(0,209,255,.5);} 50%{box-shadow:0 0 0 4000px rgba(0,0,0,0.82),0 0 0 3px var(--accent),0 0 45px rgba(0,209,255,.9);}}
-        @keyframes arrowBounce{ 0%,100%{transform:translateY(0);} 50%{transform:translateY(-5px);}}
-        @keyframes spin        { to { transform: rotate(360deg); }}
-        @keyframes skillFill   { from { width: 0; } to { width: var(--target); }}
-        @keyframes floatAvatar { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-8px);}}
-
-        .container { position: relative; width: 100vw; height: 100vh; animation: fadeInPage 1.5s ease-out; perspective: 1000px; }
-        .viking-layer,.robo-layer { position:absolute; top:-5%; left:-5%; width:110%; height:110%; background-size:cover; background-position:center; transition:transform .2s cubic-bezier(.2,.49,.32,.99),mask-image 1.2s ease-in-out,-webkit-mask-image 1.2s ease-in-out; }
-        .viking-layer { background-image: url('viking.png'); z-index:1; }
-        .robo-layer   { background-image: url('robo2.png'); z-index:2; -webkit-mask-image:radial-gradient(circle 0px at center,black 100%,transparent 100%); mask-image:radial-gradient(circle 0px at center,black 100%,transparent 100%); -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; }
-        .portal-active{ -webkit-mask-image:radial-gradient(circle 150% at center,black 100%,transparent 100%) !important; mask-image:radial-gradient(circle 150% at center,black 100%,transparent 100%) !important; }
-
-        nav { position:fixed; top:0; left:0; width:100%; padding:30px 60px; display:flex; justify-content:space-between; align-items:center; z-index:100; background:linear-gradient(to bottom,rgba(0,0,0,.8),transparent); }
-        .logo { font-size:1.2rem; font-weight:800; text-transform:uppercase; letter-spacing:3px; }
-        nav ul { display:flex; list-style:none; gap:40px; }
-        nav ul li a { color:white; text-decoration:none; font-size:.75rem; text-transform:uppercase; letter-spacing:2px; opacity:.5; transition:.4s; }
-        nav ul li a:hover { opacity:1; color:var(--accent); }
-
-        /* SIDE PANEL */
-        .side-panel-left { position:fixed; left:40px; top:50%; transform:translateY(-50%); z-index:80; display:flex; flex-direction:column; gap:25px; align-items:center; animation:fadeInPage 2s ease-out .8s backwards; }
-        .icon-wrapper { position:relative; width:50px; height:50px; background:rgba(255,255,255,.05); border:1px solid var(--glass-border); border-radius:12px; display:flex; justify-content:center; align-items:center; cursor:pointer; transition:all .4s cubic-bezier(.175,.885,.32,1.275); color:white; font-size:1.2rem; }
-        .icon-wrapper:hover { background:var(--accent); color:#000; transform:scale(1.1) translateX(5px); box-shadow:0 0 20px rgba(0,209,255,.4); }
-        .icon-wrapper::after { content:attr(data-tooltip); position:absolute; left:65px; background:var(--accent); color:#000; padding:5px 12px; font-size:.6rem; font-weight:bold; border-radius:4px; white-space:nowrap; opacity:0; transition:.3s; letter-spacing:1px; }
-        .icon-wrapper:hover::after { opacity:1; left:75px; }
-        .pulse-dot { position:absolute; top:5px; right:5px; width:8px; height:8px; background:#00ff88; border-radius:50%; box-shadow:0 0 10px #00ff88; animation:pulse 2s infinite; }
-        .decorative-line { width:1px; height:80px; background:linear-gradient(to bottom,var(--accent),transparent); }
-
-        /* CHAT */
-        .chat-ai { position:absolute; bottom:50px; right:50px; width:340px; background:var(--glass); backdrop-filter:blur(25px); -webkit-backdrop-filter:blur(25px); border:1px solid var(--glass-border); border-radius:24px; z-index:100; display:flex; flex-direction:column; animation:slideUp 1s ease-out .5s backwards; box-shadow:0 25px 50px rgba(0,0,0,.9); }
-        .chat-header { padding:20px; border-bottom:1px solid rgba(255,255,255,.1); font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--accent); }
-        .chat-messages { padding:24px; font-size:.9rem; line-height:1.4; color:white; overflow-y:auto; flex-grow:1; display:flex; flex-direction:column; gap:12px; max-height:180px; }
-        .msg { max-width:80%; padding:10px 15px; border-radius:15px; font-size:.85rem; }
-        .msg.user { align-self:flex-end; background:var(--accent); color:#000; border-bottom-right-radius:2px; font-weight:500; }
-        .msg.bot  { align-self:flex-start; background:rgba(255,255,255,.1); border:1px solid var(--glass-border); color:#fff; border-bottom-left-radius:2px; }
-        .chat-input { padding:20px; display:flex; gap:12px; background:rgba(0,0,0,.2); border-radius:0 0 24px 24px; }
-        .chat-input input { flex:1; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.2); border-radius:12px; padding:12px; color:white; outline:none; }
-        .chat-input button { background:var(--accent); border:none; padding:0 15px; border-radius:10px; cursor:pointer; transition:.3s; }
-        .vignette { position:absolute; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle,transparent 20%,rgba(0,0,0,.7) 100%); z-index:5; pointer-events:none; }
-
-        /* SCREENS BASE */
-        .projects-screen { position:fixed; top:0; left:0; width:100%; height:100%; z-index:150; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .8s ease; background:rgba(0,0,0,.4); backdrop-filter:blur(15px); }
-        .projects-screen.active { opacity:1; pointer-events:auto; }
-        .btn-back-top { position:absolute; top:40px; background:none; border:1px solid rgba(255,255,255,.3); color:white; padding:10px 25px; border-radius:50px; cursor:pointer; font-size:.7rem; letter-spacing:2px; transition:.3s; z-index:160; }
-        .btn-back-top:hover { background:white; color:black; }
-        .slider-container { display:flex; align-items:center; justify-content:center; gap:20px; width:95%; max-width:1200px; margin:80px auto 0; }
-        .project-viewport { width:900px; height:600px; overflow:hidden; position:relative; border-radius:30px; }
-        .arrow { background:none; border:none; color:white; font-size:3rem; cursor:pointer; opacity:.5; transition:.3s; user-select:none; z-index:170; flex-shrink:0; }
-        .arrow:hover { opacity:1; color:var(--accent); transform:scale(1.1); }
-        .project-track { display:flex; transition:transform .6s cubic-bezier(.23,1,.32,1); height:100%; }
-        .project-slide { min-width:900px; height:100%; display:flex; justify-content:center; align-items:center; padding:10px; }
-        .project-card-center { background:rgba(25,30,35,.85); backdrop-filter:blur(40px); -webkit-backdrop-filter:blur(40px); border:1px solid rgba(255,255,255,.2); border-radius:30px; padding:40px; width:100%; height:100%; display:flex; flex-direction:column; overflow:hidden; }
-        .project-card-center h3 { color:var(--accent); text-shadow:0 0 15px rgba(0,209,255,.4); margin-bottom:20px; }
-        .card-content { flex-grow:1; overflow-y:auto; text-align:left; padding-right:20px; }
-        .card-content p { font-size:1rem; line-height:1.8; margin-bottom:20px; opacity:.85; }
-        .card-content img { width:100%; max-width:100%; height:auto; display:block; margin:20px 0; border-radius:12px; border:1px solid var(--glass-border); box-shadow:0 10px 30px rgba(0,0,0,.5); }
-        .project-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px; }
-        .grid-item h4 { font-size:.8rem; color:var(--accent); margin-bottom:10px; letter-spacing:1px; }
-        .grid-item ul { list-style:none; font-size:.85rem; opacity:.8; }
-        .grid-item ul li::before { content:"→"; color:var(--accent); margin-right:8px; }
-        .result-bar { margin-top:20px; padding:15px; background:rgba(0,209,255,.1); border-radius:10px; font-size:.85rem; border-left:3px solid var(--accent); }
-        .img-zoom-container { position:relative; cursor:zoom-in; transition:.3s; width:100%; }
-        .zoom-icon { position:absolute; bottom:28px; right:8px; color:var(--accent); font-size:1rem; opacity:.7; }
-        .card-content::-webkit-scrollbar { width:4px; }
-        .card-content::-webkit-scrollbar-thumb { background:var(--accent); border-radius:10px; }
-        @media(max-width:768px){ .project-viewport,.project-slide{ min-width:90vw; width:90vw; } .chat-ai{ width:calc(100% - 40px); right:20px; bottom:20px; } }
-
-        /* GAMES */
-        .game-card { width:300px; height:400px; position:relative; border-radius:20px; overflow:hidden; border:1px solid var(--glass-border); transition:transform .5s cubic-bezier(.175,.885,.32,1.275),box-shadow .4s; cursor:pointer; }
-        .game-card img { width:100%; height:100%; object-fit:cover; display:block; }
-        .game-card:hover { transform:scale(1.05) translateY(-10px); box-shadow:0 15px 40px rgba(0,209,255,.4); border-color:var(--accent); }
-        .game-info { position:absolute; bottom:0; left:0; width:100%; padding:20px; background:linear-gradient(to top,rgba(0,0,0,.9),transparent); text-align:center; }
-        .game-info h3 { font-size:1.2rem; color:var(--accent); letter-spacing:2px; }
-        .game-info p { font-size:.7rem; text-transform:uppercase; opacity:.7; margin-top:5px; }
-
-        /* ═══════════════════════════════
-           CONTACT SCREEN
-        ═══════════════════════════════ */
-        .contact-screen { position:fixed; top:0; left:0; width:100%; height:100%; z-index:150; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity .8s ease; background:rgba(0,0,0,.4); backdrop-filter:blur(15px); }
-        .contact-screen.active { opacity:1; pointer-events:auto; }
-
-        .contact-wrapper {
-            display:flex; align-items:center; justify-content:center;
-            gap:70px; width:90%; max-width:1000px; margin-top:60px;
-        }
-
-        /* left decorative side */
-        .contact-left { flex:0 0 280px; display:flex; flex-direction:column; gap:28px; }
-        .contact-info-item {
-            display:flex; align-items:center; gap:16px;
-            padding:18px 22px;
-            background:rgba(255,255,255,.04);
-            border:1px solid var(--glass-border);
-            border-radius:16px;
-            transition:.3s;
-        }
-        .contact-info-item:hover { border-color:var(--accent); background:rgba(0,209,255,.05); }
-        .contact-info-item .ci-icon { width:38px; height:38px; border-radius:10px; background:rgba(0,209,255,.1); display:flex; align-items:center; justify-content:center; color:var(--accent); font-size:1rem; flex-shrink:0; }
-        .contact-info-item .ci-label { font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.4); margin-bottom:3px; }
-        .contact-info-item .ci-value { font-size:.82rem; color:#fff; font-weight:500; }
-
-        /* form */
-        .contact-form-box {
-            flex:1;
-            background:rgba(10,15,22,.85);
-            backdrop-filter:blur(30px);
-            border:1px solid rgba(0,209,255,.25);
-            border-radius:28px;
-            padding:40px;
-            box-shadow:0 0 60px rgba(0,209,255,.06);
-        }
-        .contact-form-box h2 { font-size:1.1rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:#fff; margin-bottom:6px; }
-        .contact-form-box .cf-sub { font-size:.68rem; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:28px; opacity:.8; }
-
-        .cf-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
-        .cf-field { display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
-        .cf-field label { font-size:.62rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,.45); }
-        .cf-field input, .cf-field textarea {
-            background:rgba(255,255,255,.05);
-            border:1px solid rgba(255,255,255,.12);
-            border-radius:12px; padding:13px 16px;
-            color:#fff; font-size:.88rem; outline:none;
-            transition:.3s; font-family:inherit; resize:none;
-        }
-        .cf-field input:focus, .cf-field textarea:focus { border-color:var(--accent); background:rgba(0,209,255,.04); box-shadow:0 0 0 3px rgba(0,209,255,.08); }
-        .cf-field textarea { height:110px; }
-
-        .cf-submit {
-            width:100%; padding:14px; border-radius:14px;
-            background:var(--accent); color:#000; border:none;
-            font-size:.78rem; font-weight:800; letter-spacing:2px;
-            text-transform:uppercase; cursor:pointer; transition:.3s;
-            display:flex; align-items:center; justify-content:center; gap:10px;
-        }
-        .cf-submit:hover { box-shadow:0 0 24px rgba(0,209,255,.5); transform:translateY(-2px); }
-        .cf-submit:disabled { opacity:.6; cursor:not-allowed; transform:none; }
-
-        #cf-status {
-            margin-top:14px; font-size:.8rem; text-align:center;
-            padding:10px; border-radius:10px; display:none;
-        }
-        #cf-status.success { display:block; background:rgba(0,255,136,.1); border:1px solid rgba(0,255,136,.3); color:#00ff88; }
-        #cf-status.error   { display:block; background:rgba(255,75,75,.1);  border:1px solid rgba(255,75,75,.3);  color:#ff4b4b; }
-
-        /* spinner */
-        .cf-spinner { width:16px; height:16px; border:2px solid rgba(0,0,0,.3); border-top-color:#000; border-radius:50%; animation:spin .6s linear infinite; display:none; }
-        .cf-submit.loading .cf-spinner { display:block; }
-        .cf-submit.loading .cf-btn-text { display:none; }
-
-        /* ═══════════════════════════════
-           ABOUT / SOBRE SCREEN
-        ═══════════════════════════════ */
-        .about-screen { position:fixed; top:0; left:0; width:100%; height:100%; z-index:150; display:flex; align-items:flex-start; justify-content:center; opacity:0; pointer-events:none; transition:opacity .8s ease; background:rgba(0,0,0,.4); backdrop-filter:blur(15px); overflow-y:auto; }
-        .about-screen.active { opacity:1; pointer-events:auto; }
-
-        .about-wrapper {
-            width:90%; max-width:960px;
-            margin:80px auto 40px;
-            display:flex; flex-direction:column; gap:0;
-        }
-
-        /* profile header */
-        .about-header {
-            display:flex; align-items:center; gap:40px;
-            padding:40px 44px;
-            background:rgba(10,15,22,.88);
-            backdrop-filter:blur(30px);
-            border:1px solid rgba(0,209,255,.22);
-            border-radius:28px 28px 0 0;
-            border-bottom:1px solid rgba(255,255,255,.06);
-        }
-        .about-avatar-ring {
-            width:110px; height:110px; flex-shrink:0;
-            border-radius:50%;
-            padding:3px;
-            background:linear-gradient(135deg,var(--accent),rgba(0,209,255,.2));
-            animation:floatAvatar 4s ease-in-out infinite;
-        }
-        .about-avatar-ring img {
-            width:100%; height:100%; border-radius:50%; object-fit:cover;
-            border:3px solid #0a0f16;
-        }
-        .about-header-info { flex:1; }
-        .about-header-info h1 { font-size:1.6rem; font-weight:800; letter-spacing:2px; margin-bottom:4px; }
-        .about-header-info .ah-role { font-size:.75rem; letter-spacing:3px; color:var(--accent); text-transform:uppercase; margin-bottom:14px; }
-        .about-header-info .ah-tags { display:flex; flex-wrap:wrap; gap:8px; }
-        .ah-tag { padding:4px 12px; border:1px solid rgba(0,209,255,.3); border-radius:20px; font-size:.65rem; letter-spacing:1px; text-transform:uppercase; color:rgba(255,255,255,.7); background:rgba(0,209,255,.05); }
-        .about-header-actions { display:flex; flex-direction:column; gap:10px; }
-        .ah-btn {
-            padding:10px 22px; border-radius:50px; font-size:.68rem;
-            font-weight:700; letter-spacing:2px; text-transform:uppercase;
-            cursor:pointer; transition:.3s; text-decoration:none; display:flex; align-items:center; gap:8px; white-space:nowrap;
-        }
-        .ah-btn.primary { background:var(--accent); color:#000; border:none; }
-        .ah-btn.primary:hover { box-shadow:0 0 20px rgba(0,209,255,.5); }
-        .ah-btn.secondary { background:transparent; color:rgba(255,255,255,.7); border:1px solid rgba(255,255,255,.2); }
-        .ah-btn.secondary:hover { border-color:var(--accent); color:#fff; }
-
-        /* about body card */
-        .about-body {
-            background:rgba(10,15,22,.82);
-            backdrop-filter:blur(30px);
-            border:1px solid rgba(0,209,255,.22);
-            border-top:none;
-            border-radius:0 0 28px 28px;
-            padding:36px 44px 44px;
-        }
-
-        /* section label */
-        .ab-section { margin-bottom:32px; }
-        .ab-section-title {
-            font-size:.65rem; letter-spacing:3px; text-transform:uppercase;
-            color:var(--accent); margin-bottom:18px; opacity:.9;
-            display:flex; align-items:center; gap:10px;
-        }
-        .ab-section-title::after { content:''; flex:1; height:1px; background:rgba(0,209,255,.15); }
-
-        /* summary */
-        .ab-summary { font-size:.9rem; line-height:1.8; color:rgba(255,255,255,.75); }
-
-        /* skills */
-        .skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-        .skill-item { display:flex; flex-direction:column; gap:6px; }
-        .skill-label { display:flex; justify-content:space-between; font-size:.75rem; color:rgba(255,255,255,.7); }
-        .skill-bar { height:5px; background:rgba(255,255,255,.08); border-radius:10px; overflow:hidden; }
-        .skill-fill { height:100%; border-radius:10px; background:linear-gradient(90deg,var(--accent),rgba(0,209,255,.5)); width:0; transition:width 1.2s cubic-bezier(.22,1,.36,1); }
-
-        /* experience timeline */
-        .timeline { display:flex; flex-direction:column; gap:0; }
-        .tl-item { display:flex; gap:20px; padding-bottom:28px; position:relative; }
-        .tl-item:last-child { padding-bottom:0; }
-        .tl-item:last-child .tl-line { display:none; }
-        .tl-left { display:flex; flex-direction:column; align-items:center; width:36px; flex-shrink:0; }
-        .tl-dot { width:10px; height:10px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px rgba(0,209,255,.5); flex-shrink:0; margin-top:5px; }
-        .tl-line { flex:1; width:1px; background:rgba(0,209,255,.2); margin-top:6px; }
-        .tl-content { flex:1; padding-top:1px; }
-        .tl-company { font-size:.65rem; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:2px; }
-        .tl-role { font-size:.92rem; font-weight:700; color:#fff; margin-bottom:4px; }
-        .tl-period { font-size:.68rem; color:rgba(255,255,255,.35); letter-spacing:1px; margin-bottom:8px; }
-        .tl-desc { font-size:.82rem; line-height:1.65; color:rgba(255,255,255,.62); }
-
-        /* education */
-        .edu-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-        .edu-card { padding:18px 20px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:14px; transition:.3s; }
-        .edu-card:hover { border-color:rgba(0,209,255,.3); background:rgba(0,209,255,.04); }
-        .edu-inst { font-size:.62rem; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:4px; }
-        .edu-course { font-size:.88rem; font-weight:600; color:#fff; margin-bottom:4px; }
-        .edu-period { font-size:.68rem; color:rgba(255,255,255,.35); }
-
-        /* certs */
-        .cert-list { display:flex; flex-direction:column; gap:10px; }
-        .cert-item { display:flex; align-items:center; gap:14px; padding:14px 18px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:12px; transition:.3s; }
-        .cert-item:hover { border-color:rgba(0,209,255,.3); }
-        .cert-icon { color:var(--accent); font-size:.9rem; width:20px; text-align:center; }
-        .cert-name { font-size:.82rem; color:#fff; flex:1; }
-        .cert-issuer { font-size:.68rem; color:rgba(255,255,255,.4); }
-
-        /* contacts section */
-        .contact-links { display:flex; gap:14px; flex-wrap:wrap; }
-        .cl-item { display:flex; align-items:center; gap:10px; padding:12px 18px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:12px; text-decoration:none; color:#fff; font-size:.8rem; transition:.3s; }
-        .cl-item:hover { border-color:var(--accent); color:var(--accent); background:rgba(0,209,255,.05); }
-        .cl-item i { font-size:.9rem; color:var(--accent); }
-
-        /* about scrollbar */
-        .about-screen::-webkit-scrollbar { width:4px; }
-        .about-screen::-webkit-scrollbar-thumb { background:var(--accent); border-radius:10px; }
-
-        /* ═══════════════════════════════
-           TUTORIAL
-        ═══════════════════════════════ */
-        #tut-welcome { position:fixed; inset:0; z-index:9000; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.75); backdrop-filter:blur(8px); animation:fadeInPage .6s ease; }
-        #tut-welcome.hidden { display:none; }
-        .tut-welcome-box { background:rgba(10,15,22,.95); border:1px solid rgba(0,209,255,.35); border-radius:28px; padding:48px 52px; max-width:520px; text-align:center; box-shadow:0 0 80px rgba(0,209,255,.12); animation:tutorialPop .5s cubic-bezier(.34,1.56,.64,1); }
-        .tut-welcome-box .tut-icon { font-size:2.8rem; margin-bottom:20px; filter:drop-shadow(0 0 12px rgba(0,209,255,.6)); }
-        .tut-welcome-box h2 { font-size:1.5rem; font-weight:800; letter-spacing:3px; text-transform:uppercase; color:#fff; margin-bottom:10px; }
-        .tut-welcome-box .tut-sub { font-size:.78rem; letter-spacing:2px; color:var(--accent); text-transform:uppercase; margin-bottom:24px; }
-        .tut-welcome-box p { font-size:.95rem; line-height:1.7; color:rgba(255,255,255,.75); margin-bottom:36px; }
-        .tut-welcome-btns { display:flex; gap:14px; justify-content:center; }
-        .tut-btn-yes { background:var(--accent); color:#000; border:none; padding:13px 32px; border-radius:50px; font-size:.8rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:.3s; }
-        .tut-btn-yes:hover { transform:scale(1.05); box-shadow:0 0 20px rgba(0,209,255,.5); }
-        .tut-btn-no { background:transparent; color:rgba(255,255,255,.5); border:1px solid rgba(255,255,255,.2); padding:13px 32px; border-radius:50px; font-size:.8rem; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:.3s; }
-        .tut-btn-no:hover { border-color:rgba(255,255,255,.5); color:#fff; }
-        #tut-curtain { position:fixed; inset:0; z-index:8001; background:rgba(0,0,0,.82); pointer-events:all; transition:opacity .4s; }
-        #tut-curtain.hidden { opacity:0; pointer-events:none; }
-        .tut-spotlight { position:relative; z-index:8500 !important; animation:spotlightPulse 2s ease-in-out infinite; border-radius:14px; pointer-events:auto; }
-        #tut-card { position:fixed; z-index:9100; width:340px; background:rgba(8,14,22,.97); border:1px solid rgba(0,209,255,.4); border-radius:20px; padding:28px 30px 24px; box-shadow:0 8px 60px rgba(0,0,0,.7),0 0 30px rgba(0,209,255,.1); transition:all .45s cubic-bezier(.34,1.2,.64,1); animation:tutorialPop .4s cubic-bezier(.34,1.2,.64,1); }
-        #tut-card.hidden { display:none; }
-        #tut-card::before { content:''; position:absolute; width:12px; height:12px; background:rgba(0,209,255,.4); transform:rotate(45deg); transition:all .3s; }
-        #tut-card.arrow-left::before  { left:-6px; top:30px; }
-        #tut-card.arrow-right::before { right:-6px; top:30px; }
-        #tut-card.arrow-top::before   { top:-6px; left:30px; }
-        #tut-card.arrow-bottom::before{ bottom:-6px; left:30px; }
-        #tut-card.arrow-none::before  { display:none; }
-        .tut-step-label { font-size:.6rem; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:10px; opacity:.8; }
-        .tut-card-icon { font-size:1.6rem; margin-bottom:10px; }
-        #tut-title { font-size:1rem; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:#fff; margin-bottom:10px; }
-        #tut-text { font-size:.88rem; line-height:1.65; color:rgba(255,255,255,.75); margin-bottom:22px; }
-        .tut-progress { display:flex; gap:6px; margin-bottom:18px; }
-        .tut-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,.2); transition:.3s; }
-        .tut-dot.active { background:var(--accent); transform:scale(1.3); }
-        .tut-dot.done   { background:rgba(0,209,255,.4); }
-        .tut-nav-btns { display:flex; gap:10px; align-items:center; justify-content:space-between; }
-        .tut-prev { background:transparent; border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.6); padding:9px 18px; border-radius:50px; font-size:.72rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:.3s; }
-        .tut-prev:hover { border-color:rgba(255,255,255,.5); color:#fff; }
-        .tut-next { background:var(--accent); color:#000; border:none; padding:9px 22px; border-radius:50px; font-size:.72rem; font-weight:700; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:.3s; flex:1; text-align:center; }
-        .tut-next:hover { box-shadow:0 0 16px rgba(0,209,255,.5); transform:scale(1.03); }
-        .tut-skip { background:none; border:none; color:rgba(255,255,255,.25); font-size:.65rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; transition:.3s; margin-top:14px; display:block; text-align:center; width:100%; }
-        .tut-skip:hover { color:rgba(255,255,255,.6); }
-        #tut-pointer { position:fixed; z-index:9050; font-size:2rem; color:var(--accent); animation:arrowBounce .8s ease-in-out infinite; text-shadow:0 0 20px rgba(0,209,255,.8); transition:all .4s ease; pointer-events:none; }
-        #tut-pointer.hidden { display:none; }
-        #tut-finish { position:fixed; inset:0; z-index:9200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.8); backdrop-filter:blur(8px); }
-        #tut-finish.hidden { display:none; }
-        .tut-finish-box { background:rgba(10,15,22,.97); border:1px solid rgba(0,209,255,.35); border-radius:28px; padding:48px 52px; max-width:500px; text-align:center; animation:tutorialPop .5s cubic-bezier(.34,1.56,.64,1); }
-        .tut-finish-box h2 { font-size:1.5rem; letter-spacing:3px; text-transform:uppercase; margin-bottom:12px; }
-        .tut-finish-box p { color:rgba(255,255,255,.7); line-height:1.7; margin-bottom:28px; }
-        .tut-finish-btn { background:var(--accent); color:#000; border:none; padding:13px 36px; border-radius:50px; font-size:.8rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:.3s; }
-        .tut-finish-btn:hover { transform:scale(1.05); box-shadow:0 0 24px rgba(0,209,255,.5); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matheus Lopes — Frontend & Automação</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- TUTORIAL WELCOME -->
-    <div id="tut-welcome">
-        <div class="tut-welcome-box">
-            <h2>Bem-vindo</h2>
-            <div class="tut-sub">Matheus Lopes — IA & Automação</div>
-            <p>Você gostaria de fazer um tour guiado pelo portfólio? Vou te mostrar todas as funcionalidades e projetos escondidos nessa interface.</p>
-            <div class="tut-welcome-btns">
-                <button class="tut-btn-yes" onclick="startTutorial()">✦ Sim!</button>
-                <button class="tut-btn-no"  onclick="skipTutorial()">Explorar sozinho</button>
-            </div>
-        </div>
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <button class="nav-brand nav-profile-trigger" type="button" aria-label="Ampliar foto de perfil de Matheus Lopes">
+      <img src="fotodisney.png" alt="Matheus Lopes" class="nav-avatar">
+      <span>Matheus Lopes</span>
+    </button>
+    <div class="nav-links">
+      <a href="#projetos">Projetos</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#galeria">Eventos</a>
+      <a href="#curriculo">Currículo</a>
+      <a href="#contato">Contato</a>
     </div>
-    <div id="tut-curtain" class="hidden" onclick="advanceTutorial()"></div>
-    <div id="tut-card" class="hidden arrow-none">
-        <div class="tut-step-label" id="tut-step-label">PASSO 1 DE 8</div>
-        <div class="tut-card-icon"  id="tut-card-icon">🏠</div>
-        <div id="tut-title">Título</div>
-        <div id="tut-text">Texto</div>
-        <div class="tut-progress"   id="tut-progress"></div>
-        <div class="tut-nav-btns">
-            <button class="tut-prev" id="tut-prev" onclick="prevStep()">← Voltar</button>
-            <button class="tut-next" id="tut-next" onclick="nextStep()">Próximo →</button>
-        </div>
-        <button class="tut-skip" onclick="skipTutorial()">Pular tour</button>
+  </div>
+</nav>
+
+<div class="profile-lightbox" id="profileLightbox" hidden>
+  <button class="profile-lightbox__close" id="profileClose" aria-label="Fechar foto de perfil">✕</button>
+  <img src="fotodisney.png" alt="Foto ampliada de Matheus Lopes" class="profile-lightbox__image">
+</div>
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="hero-layer hero-layer-back" data-depth="0.2"></div>
+  <div class="hero-layer hero-layer-mid" data-depth="0.45"></div>
+
+  <div class="hero-content">
+    <span class="status-indicator">
+      <span class="status-dot"></span>
+      <span class="status-label">DISPONÍVEL PARA NOVOS PROJETOS</span>
+    </span>
+    <h1 class="hero-title" aria-label="Matheus Lopes">
+      <span class="title-word title-word-first">Matheus</span>
+      <span class="title-word title-word-second">Lopes</span>
+    </h1>
+    <p class="hero-subtitle">Front-End Developer (React) · Automação & IA com n8n · Suporte Técnico N2</p>
+    <div class="hero-actions">
+      <a href="#projetos" class="btn btn-primary">Ver projetos</a>
+      <a href="curriculo.pdf" class="btn btn-secondary" download="curriculo.pdf">Baixar currículo</a>
     </div>
-    <div id="tut-pointer" class="hidden">↑</div>
-    <div id="tut-finish" class="hidden">
-        <div class="tut-finish-box">
-            <div style="font-size:2.5rem;margin-bottom:16px;">🎉</div>
-            <h2>Tour Completo!</h2>
-            <p>Agora você conhece todos os segredos do portfólio. Explore os projetos, converse com a IA ou jogue um dos mini games!</p>
-            <button class="tut-finish-btn" onclick="endTutorial()">Começar a explorar ✦</button>
-        </div>
+  </div>
+
+  <div class="hero-reveal" id="heroReveal">
+    <div class="reveal-item" data-badge>REACT</div>
+    <div class="reveal-item" data-badge>NODE.JS</div>
+    <div class="reveal-item" data-badge>N8N</div>
+    <div class="reveal-item" data-badge>HUBSPOT API</div>
+    <div class="reveal-item" data-badge>PYTHON</div>
+    <div class="reveal-item" data-badge>JAVASCRIPT</div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>role para explorar</span>
+    <div class="scroll-cue-line"></div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section class="section reveal-section" id="sobre">
+  <span class="eyebrow">SOBRE</span>
+  <h2 class="section-title">Ponte entre operação e desenvolvimento</h2>
+  <p class="section-text">
+    Desenvolvedor Front-End (React, JavaScript) em transição de carreira dentro da própria área de tecnologia.
+    Suporte Técnico N2 e Automação de Processos na Cobli, migrando para desenvolvimento.
+    Tecnólogo em Análise e Desenvolvimento de Sistemas. Construo soluções que unem código e operação —
+    já entreguei feature de seleção múltipla em React, automações com IA no Slack, e integrações via HubSpot e APIs REST.
+  </p>
+  <p class="section-text section-text-muted">
+    Diferencial: entendo a dor de quem está do outro lado do sistema — SLA, atendimento ao cliente,
+    infraestrutura de suporte — porque vivi isso na prática antes de programar a solução.
+  </p>
+</section>
+
+<!-- PROJETOS -->
+<section class="section section-dense reveal-section" id="projetos">
+  <div class="projects-glow" aria-hidden="true"></div>
+  <span class="eyebrow">PROJETOS</span>
+  <h2 class="section-title">O que já construí</h2>
+
+  <div class="project-grid">
+
+    <article class="project-card reveal-card" data-project="cobli-panel" tabindex="0" role="button" aria-label="Abrir detalhes do projeto Seleção múltipla de ESNs">
+      <div class="project-card-header">
+        <h3>Seleção múltipla de ESNs Painel Admin Cobli</h3>
+      </div>
+      <p>Desenvolvi uma funcionalidade em React para selecionar vários equipamentos de uma vez, com regras de validação para impedir cruzamento entre painéis de clientes diferentes, otimizando tempo e reduzindo erros operacionais.</p>
+      <div class="tag-row">
+        <span class="badge">REACT</span>
+        <span class="badge">JAVASCRIPT</span>
+        <span class="badge">UX</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="tickets-cnpj" tabindex="0" role="button" aria-label="Abrir detalhes do projeto Abertura automática de tickets por CNPJ">
+      <div class="project-card-header">
+        <h3>Abertura automática de tickets por CNPJ</h3>
+      </div>
+      <p>Lógica de negócio para identificar múltiplos CNPJs vinculados ao mesmo painel de cliente e abrir tickets segmentados automaticamente a partir da seleção dos equipamentos.</p>
+      <div class="tag-row">
+        <span class="badge">REACT</span>
+        <span class="badge">REGRA DE NEGÓCIO</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="slack-bot" tabindex="0" role="button" aria-label="Abrir detalhes do projeto Bot de suporte com IA no Slack">
+      <div class="project-card-header">
+        <h3>Bot de suporte com IA Slack</h3>
+      </div>
+      <p>Bot ativo no canal de suporte interno, fazendo o primeiro contato com o solicitante para validar a demanda e buscar o contexto do ticket em tempo real antes mesmo de o agente responder.</p>
+      <div class="tag-row">
+        <span class="badge">N8N</span>
+        <span class="badge">IA</span>
+        <span class="badge">SLACK</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="snippet-generator" tabindex="0" role="button" aria-label="Abrir detalhes do projeto IA geradora de Snippet">
+      <div class="project-card-header">
+        <h3>IA geradora de Snippet</h3>
+      </div>
+      <p>Automatizei a criação de snippets de documentação a partir do número de série do equipamento, integrando a IA com Snowflake para buscar modelo, placa e códigos e gerar o conteúdo com base na regra de negócio da operação.</p>
+      <div class="tag-row">
+        <span class="badge">IA</span>
+        <span class="badge">SNOWFLAKE</span>
+        <span class="badge">DOCUMENTAÇÃO</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="faq-ai" tabindex="0" role="button" aria-label="Abrir detalhes do projeto IA para FAQ de suporte técnico">
+      <div class="project-card-header">
+        <h3>IA para FAQ de suporte técnico</h3>
+      </div>
+      <p>Baseamos o modelo em dados do cliente e da FAQ de suporte, com embeddings no Supabase e uso do Claude Haiku 3 para responder consultas em linguagem natural com tradução de vetores e recuperação contextualizada.</p>
+      <div class="tag-row">
+        <span class="badge">IA</span>
+        <span class="badge">SUPABASE</span>
+        <span class="badge">CLAUDE</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="multi-agent" tabindex="0" role="button" aria-label="Abrir detalhes do projeto Sistema multiagente de IA">
+      <div class="project-card-header">
+        <h3>Sistema multiagente de IA</h3>
+      </div>
+      <p>Fluxo multiagente para orquestrar diferentes tarefas de IA em sequência, incluindo transcrição de áudio, validação de contexto e execução de passos automatizados em um ambiente de suporte e operação.</p>
+      <div class="tag-row">
+        <span class="badge">N8N</span>
+        <span class="badge">IA</span>
+        <span class="badge">ÁUDIO</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="logistica" tabindex="0" role="button" aria-label="Abrir detalhes do projeto Rastreio de logística automatizado">
+      <div class="project-card-header">
+        <h3>Rastreio de logística automatizado</h3>
+      </div>
+      <p>Quando o ticket entrava em status “A caminho”, o fluxo validava se havia envio de equipamento ou periférico, identificava a transportadora e enviava um e-mail com link direto de rastreio, NF e dados do envio.</p>
+      <div class="tag-row">
+        <span class="badge">AUTOMAÇÃO</span>
+        <span class="badge">CRM</span>
+      </div>
+    </article>
+
+    <article class="project-card reveal-card" data-project="gestao-bia" tabindex="0" role="button" aria-label="Abrir detalhes do projeto Gestão Bia">
+      <div class="project-card-header">
+        <h3>Aplicativo Web de gestão de contratos</h3>
+      </div>
+      <p>Aplicação open source para gestão de contratos com dados salvos no cache do navegador, permitindo persistência local sem depender de banco externo e sem perder informações ao desligar a máquina.</p>
+      <div class="tag-row">
+        <span class="badge">OPEN SOURCE</span>
+        <span class="badge">LOCAL STORAGE</span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- GALERIA DE EVENTOS -->
+<section class="section reveal-section" id="galeria">
+  <span class="eyebrow">EVENTOS</span>
+  <h2 class="section-title">Registro de eventos e comunidade</h2>
+  <div class="gallery-grid">
+    <div class="gallery-placeholder"><span>Databricks — em breve</span></div>
+    <div class="gallery-placeholder"><span>Em breve</span></div>
+    <div class="gallery-placeholder"><span>Em breve</span></div>
+  </div>
+</section>
+
+<!-- CURRÍCULO -->
+<section class="section section-cta reveal-section" id="curriculo">
+  <span class="eyebrow">CURRÍCULO</span>
+  <h2 class="section-title">Baixe meu currículo completo</h2>
+  <p class="section-text">Versão em PDF, atualizada com experiências, formação e stack técnica.</p>
+  <a href="curriculo.pdf" download="curriculo.pdf" class="btn btn-primary btn-lg">
+    ⬇ Baixar CV (PDF)
+  </a>
+</section>
+
+<!-- RODAPÉ / CONTATO -->
+<footer class="footer" id="contato">
+  <div class="footer-inner">
+    <div>
+      <h3>Vamos conversar</h3>
+      <p>São Paulo, Brasil</p>
     </div>
-
-    <!-- NAV -->
-    <nav id="main-nav">
-        <div class="logo">Matheus Lopes</div>
-        <ul>
-            <li><a href="#" id="btn-projetos">Projetos</a></li>
-            <li><a href="#" id="btn-game-nav">Mini Game</a></li>
-            <li><a href="#" id="btn-contato-nav">Contato</a></li>
-            <li><a href="#" id="btn-sobre-nav">Sobre</a></li>
-        </ul>
-    </nav>
-
-    <!-- SIDE PANEL -->
-    <div class="side-panel-left" id="side-panel">
-        <div class="decorative-line"></div>
-        <div class="icon-wrapper" id="btn-projetos-side" data-tooltip="PROJETOS">
-            <i class="fa-solid fa-layer-group"></i>
-            <div class="pulse-dot"></div>
-        </div>
-        <a href="#" id="link-game-side" style="text-decoration:none;">
-            <div class="icon-wrapper" id="btn-game-side" data-tooltip="MINI GAME">
-                <i class="fa-solid fa-gamepad"></i>
-            </div>
-        </a>
-        <a href="#" id="link-contato-side" style="text-decoration:none;">
-            <div class="icon-wrapper" data-tooltip="CONTATO">
-                <i class="fa-solid fa-envelope"></i>
-            </div>
-        </a>
-        <a href="https://www.linkedin.com/in/matheusluislopessilva/" target="_blank" style="text-decoration:none;">
-            <div class="icon-wrapper" data-tooltip="LINKEDIN">
-                <i class="fa-brands fa-linkedin-in"></i>
-            </div>
-        </a>
-        <a href="#" id="link-sobre-side" style="text-decoration:none;">
-            <div class="icon-wrapper" data-tooltip="SOBRE">
-                <i class="fa-solid fa-user"></i>
-            </div>
-        </a>
-        <div class="decorative-line" style="background:linear-gradient(to top,var(--accent),transparent);"></div>
+    <div class="footer-links">
+      <a href="https://github.com/mmatheusllsilva" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://www.linkedin.com/in/matheusluislopessilva/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a href="mailto:matheus.luis.lopes.silva@outlook.com">E-mail</a>
     </div>
+  </div>
+</footer>
 
-    <!-- PARALLAX BG -->
-    <div class="vignette"></div>
-    <div class="container">
-        <div class="viking-layer" id="viking"></div>
-        <div class="robo-layer"   id="roboLayer"></div>
-        <div class="chat-ai" id="chatAi">
-            <div class="chat-header">Matheus.AI - Assistente</div>
-            <div class="chat-messages" id="chatMessages">
-                <div class="msg bot">Olá, eu sou o assistente de IA do Matheus, como posso te ajudar hoje?</div>
-            </div>
-            <div class="chat-input">
-                <input type="text" id="userInput" placeholder="Digite aqui...">
-                <button id="sendBtn">➤</button>
-            </div>
-        </div>
+<div class="project-modal" id="projectModal" hidden>
+  <div class="project-modal__backdrop" data-close-modal></div>
+  <div class="project-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle">
+    <button type="button" class="project-modal__close" id="projectModalClose" aria-label="Fechar projeto">✕</button>
+
+    <div class="project-modal__content">
+      <div class="project-modal__media">
+        <button type="button" class="project-modal__nav project-modal__nav--prev" id="projectPrev" aria-label="Projeto anterior">‹</button>
+        <img id="projectImage" src="" alt="" class="project-modal__image">
+        <button type="button" class="project-modal__nav project-modal__nav--next" id="projectNext" aria-label="Próximo projeto">›</button>
+        <div class="project-modal__thumbs" id="projectThumbs"></div>
+      </div>
+
+      <div class="project-modal__details">
+        <span class="eyebrow project-modal__eyebrow" id="projectCategory">PROJETO</span>
+        <h3 id="projectModalTitle">Título</h3>
+        <p id="projectModalDescription">Descrição</p>
+        <ul id="projectModalStack" class="project-modal__stack"></ul>
+      </div>
     </div>
+  </div>
+</div>
 
-    <!-- PROJECTS SCREEN -->
-    <section class="projects-screen" id="projectsScreen">
-        <button class="btn-back-top" onclick="closeProjects()">VOLTAR AO INÍCIO</button>
-        <div class="slider-container">
-            <button class="arrow" onclick="moveSlide(-1)">&#10094;</button>
-            <div class="project-viewport">
-                <div class="project-track" id="projectTrack">
-                    <div class="project-slide"><div class="project-card-center"><h3>AUTOMAÇÃO DE LOGÍSTICA & RASTREIO</h3><div class="card-content"><div class="img-zoom-container" onclick="toggleZoom(this)"><img src="projeto-codigo-de-rastreio.jpeg" alt="Workflow de Rastreio"><div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div></div><div class="project-grid"><div class="grid-item"><h4><i class="fa-solid fa-triangle-exclamation"></i> DESAFIO</h4><ul><li>Inexistência do envio de dados de envio.</li><li>Sobrecarga no Atendimento.</li><li>Incerteza na Jornada do Cliente.</li><li>Fragmentação de Transportadoras.</li><li>Gestão de Exceções.</li></ul></div><div class="grid-item"><h4><i class="fa-solid fa-gears"></i> SOLUÇÃO</h4><ul><li>Workflow centralizado no n8n.</li><li>Gatilhos em tempo real via CRM.</li><li>Tratamento automatizado de Notas Fiscais.</li><li>Lógica de links dinâmicos por transportadora.</li><li>Registro automático no CRM.</li></ul></div></div><div class="result-bar"><strong><i class="fa-solid fa-chart-line"></i> RESULTADO:</strong> Redução de chamados sobre o tema e excelência em UX com envio de pedido.</div></div></div></div>
-                    <div class="project-slide"><div class="project-card-center"><h3>SISTEMA DE MULTI-AGENTES IA</h3><div class="card-content"><div class="img-zoom-container" onclick="toggleZoom(this)"><img src="multiagente.jpeg" alt="Multi-Agente"><div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div></div><div class="project-grid"><div class="grid-item"><h4><i class="fa-solid fa-users-gear"></i> ATENDIMENTO 24/7</h4><ul><li><strong>Beatriz:</strong> Atendimento e Triagem.</li><li><strong>Matheus:</strong> Suporte Técnico.</li><li><strong>Natanael:</strong> Operações Financeiras.</li></ul></div><div class="grid-item"><h4><i class="fa-solid fa-brain"></i> TECNOLOGIAS</h4><ul><li>Orquestração via <strong>n8n</strong>.</li><li>Modelos com memória de contexto.</li><li>Tomada de decisão autônoma.</li><li>Integração com APIs externas.</li></ul></div></div><div class="result-bar"><strong><i class="fa-solid fa-bolt"></i> RESULTADO:</strong> Automação de atendimento com relatório</div></div></div></div>
-                    <div class="project-slide"><div class="project-card-center"><h3>FERRAMENTA PARA CRIAR E-MAIL E MENSAGENS</h3><div class="card-content"><div class="project-grid" style="margin-top:0;margin-bottom:20px;"><div class="img-zoom-container" onclick="toggleZoom(this)"><img src="frontIAmensagem.jpeg" alt="Interface"><div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div></div><div class="img-zoom-container" onclick="toggleZoom(this)"><img src="IAmensagem.jpeg" alt="Processamento"><div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div></div></div><div class="project-grid"><div class="grid-item"><h4><i class="fa-solid fa-triangle-exclamation"></i> O PROBLEMA</h4><ul><li>Uso excessivo de macros engessadas.</li><li>Tom de voz robotizado.</li><li>Comunicação impessoal.</li></ul></div><div class="grid-item"><h4><i class="fa-solid fa-wand-magic-sparkles"></i> A SOLUÇÃO</h4><ul><li>Mensagens e e-mails adequados ao tom de qualidade.</li><li>IA para ajuste de tom e clareza.</li><li>Textos profissionais.</li></ul></div></div><div class="result-bar"><strong><i class="fa-solid fa-envelope-circle-check"></i> OBJETIVO:</strong> Padronizar a excelência na comunicação corporativa.</div></div></div></div>
-                    <div class="project-slide"><div class="project-card-center"><h3>PROJETO PORTFÓLIO & UX</h3><div class="card-content"><div class="img-zoom-container" onclick="toggleZoom(this)"><img src="projetoportfolio.jpeg" alt="Portfólio"><div class="zoom-icon"><i class="fa-solid fa-magnifying-glass-plus"></i></div></div><div class="project-grid"><div class="grid-item"><h4><i class="fa-solid fa-palette"></i> DESIGN</h4><ul><li>Front-end e integração de sistemas.</strong>.</li><li>UX Experimental: Validar o uso de interfaces não convencionais para navegação de portfólio..</li></ul></div><div class="grid-item"><h4><i class="fa-solid fa-code"></i> ENGINE</h4><ul><li>Trabalho assíncronos via n8n conectando modelos de linguagem a ferramentas externas.</li><li>CSS3 + Integração via Webhooks e REST APIs.</li></ul></div></div><div class="result-bar"><strong><i class="fa-solid fa-wand-magic-sparkles"></i> DIFERENCIAL:</strong> Implementação de front-end e Back-end.</div></div></div></div>
-                </div>
-            </div>
-            <button class="arrow" onclick="moveSlide(1)">&#10095;</button>
-        </div>
-    </section>
+<!-- CHAT IA FLUTUANTE -->
+<button class="chat-fab" id="chatFab" aria-label="Abrir chat">
+  <span class="status-dot" aria-hidden="true"></span>
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M8 7.5h8a3 3 0 0 1 3 3v4.5a3 3 0 0 1-3 3H12l-4.5 3v-3H8a3 3 0 0 1-3-3V10.5a3 3 0 0 1 3-3Zm1.4 3.2h5.2M9.4 12.8h5.2M9.4 16.3h3.1" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M8 5.5v3.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    <path d="M16 5.5v3.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+  </svg>
+  <span class="sr-only">Abrir chat</span>
+</button>
 
-    <!-- GAMES SCREEN -->
-    <section class="projects-screen" id="gamesScreen">
-        <button class="btn-back-top" onclick="closeGames()">VOLTAR AO INÍCIO</button>
-        <div class="slider-container">
-            <div class="project-viewport">
-                <div class="project-track" style="display:flex;justify-content:center;gap:40px;padding:20px;width:100%;">
-                    <a href="https://mmatheusllsilva.github.io/Drakkar-game/" target="_blank" style="text-decoration:none;"><div class="game-card"><img src="capajogo1.png" alt="Drakkar" onerror="this.src='https://via.placeholder.com/300x400/0a0f14/00d1ff?text=DRAKKAR'"><div class="game-info"><h3>DRAKKAR</h3><p>Mar do Norte</p></div></div></a>
-                    <a href="https://mmatheusllsilva.github.io/Grakkar-Village/" target="_blank" style="text-decoration:none;"><div class="game-card"><img src="capajogo2.png" alt="Valhalla" onerror="this.src='https://via.placeholder.com/300x400/0a0f14/00d1ff?text=VALHALLA'"><div class="game-info"><h3>VALHALLA GATE</h3><p>Exploração</p></div></div></a>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="chat-popup" id="chatPopup" hidden>
+  <div class="chat-popup-header" id="chatDragHandle">
+    <span class="status-indicator status-indicator-sm">
+      <span class="status-dot"></span> MATHEUS.AI · ASSISTENTE
+    </span>
+    <button class="chat-close" id="chatClose" aria-label="Fechar chat">✕</button>
+  </div>
+  <div class="chat-body" id="chatBody">
+    <div class="chat-msg chat-msg-bot">Olá, eu sou o assistente de IA do Matheus. Como posso te ajudar hoje?</div>
+  </div>
+  <div class="chat-input-row">
+    <input type="text" id="chatInput" placeholder="Digite aqui...">
+    <button id="chatSend" aria-label="Enviar">➤</button>
+  </div>
+</div>
 
-    <!-- ═══ CONTACT SCREEN ═══ -->
-    <section class="contact-screen" id="contactScreen">
-        <button class="btn-back-top" onclick="closeContact()">VOLTAR AO INÍCIO</button>
-        <div class="contact-wrapper">
-
-            <!-- Left info -->
-            <div class="contact-left">
-                <div class="contact-info-item">
-                    <div class="ci-icon"><i class="fa-solid fa-envelope"></i></div>
-                    <div>
-                        <div class="ci-label">E-mail</div>
-                        <div class="ci-value">matheus.luis.lopes.silva<br>@outlook.com</div>
-                    </div>
-                </div>
-                <div class="contact-info-item">
-                    <div class="ci-icon"><i class="fa-brands fa-whatsapp"></i></div>
-                    <div>
-                        <div class="ci-label">WhatsApp</div>
-                        <div class="ci-value">(11) 91311-9373</div>
-                    </div>
-                </div>
-                <div class="contact-info-item">
-                    <div class="ci-icon"><i class="fa-brands fa-linkedin-in"></i></div>
-                    <div>
-                        <div class="ci-label">LinkedIn</div>
-                        <div class="ci-value">matheusluislopessilva</div>
-                    </div>
-                </div>
-                <div class="contact-info-item" style="border-color:rgba(0,209,255,.2);background:rgba(0,209,255,.04);">
-                    <div class="ci-icon"><i class="fa-solid fa-bolt"></i></div>
-                    <div>
-                        <div class="ci-label">Resposta</div>
-                        <div class="ci-value">Em até 24h</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Form -->
-            <div class="contact-form-box">
-                <h2>Envie uma mensagem</h2>
-                <div class="cf-sub">Fique à vontade para entrar em contato</div>
-
-                <div class="cf-row">
-                    <div class="cf-field">
-                        <label>Nome</label>
-                        <input type="text" id="cf-name" placeholder="Seu nome" required>
-                    </div>
-                    <div class="cf-field">
-                        <label>E-mail</label>
-                        <input type="email" id="cf-email" placeholder="seu@email.com" required>
-                    </div>
-                </div>
-                <div class="cf-field">
-                    <label>Assunto</label>
-                    <input type="text" id="cf-subject" placeholder="Sobre o que você quer falar?">
-                </div>
-                <div class="cf-field">
-                    <label>Mensagem</label>
-                    <textarea id="cf-message" placeholder="Escreva sua mensagem aqui..." required></textarea>
-                </div>
-
-                <button class="cf-submit" id="cf-submit" onclick="sendContactForm()">
-                    <span class="cf-btn-text"><i class="fa-solid fa-paper-plane"></i> &nbsp;Enviar Mensagem</span>
-                    <div class="cf-spinner"></div>
-                </button>
-                <div id="cf-status"></div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ═══ ABOUT / SOBRE SCREEN ═══ -->
-    <section class="about-screen" id="aboutScreen">
-        <div class="about-wrapper">
-            <button class="btn-back-top" style="position:relative;top:auto;margin-bottom:20px;align-self:center;" onclick="closeAbout()">VOLTAR AO INÍCIO</button>
-
-            <!-- Header profile -->
-            <div class="about-header">
-                <div class="about-avatar-ring">
-                    <img src="foto.jpg" alt="Matheus Lopes" onerror="this.src='https://via.placeholder.com/110/0a0f16/00d1ff?text=ML'">
-                </div>
-                <div class="about-header-info">
-                    <h1>Matheus Lopes</h1>
-                    <div class="ah-role">Automação · IA · Front-end · Suporte TI</div>
-                    <div class="ah-tags">
-                        <span class="ah-tag">n8n</span>
-                        <span class="ah-tag">Multi-Agentes IA</span>
-                        <span class="ah-tag">APIs</span>
-                        <span class="ah-tag">ITIL</span>
-                        <span class="ah-tag">Front-end</span>
-                        <span class="ah-tag">Suporte N1/N2</span>
-                    </div>
-                </div>
-                <div class="about-header-actions">
-                    <a href="https://www.linkedin.com/in/matheusluislopessilva/" target="_blank" class="ah-btn primary"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</a>
-                    <a href="#" onclick="closeAbout();setTimeout(openContact,400);" class="ah-btn secondary"><i class="fa-solid fa-envelope"></i> Contato</a>
-                </div>
-            </div>
-
-            <!-- Body -->
-            <div class="about-body">
-
-                <!-- Resumo -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-user"></i> Resumo Profissional</div>
-                    <p class="ab-summary">Profissional de desenvolvimento de software e automação, com sólida bagagem em Suporte Técnico (N1/N2) e Governança de TI (ITIL/COBIT). Foco atual na criação de soluções inteligentes utilizando <strong style="color:var(--accent)">n8n</strong> para orquestrar ecossistemas de <strong style="color:var(--accent)">Multi-Agentes de IA</strong>, integrando-os a interfaces Front-end modernas e integrações via APIs. Experiência prática em resolução de problemas críticos, gestão de infraestrutura e otimização de processos em ambientes de logística e tecnologia.</p>
-                </div>
-
-                <!-- Habilidades -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-code"></i> Habilidades Técnicas</div>
-                    <div class="skills-grid" id="skillsGrid">
-                        <div class="skill-item"><div class="skill-label"><span>n8n & Automação</span><span>92%</span></div><div class="skill-bar"><div class="skill-fill" style="--target:92%"></div></div></div>
-                        <div class="skill-item"><div class="skill-label"><span>Multi-Agentes de IA</span><span>88%</span></div><div class="skill-bar"><div class="skill-fill" style="--target:88%"></div></div></div>
-                        <div class="skill-item"><div class="skill-label"><span>Integração de APIs</span><span>85%</span></div><div class="skill-bar"><div class="skill-fill" style="--target:85%"></div></div></div>
-                        <div class="skill-item"><div class="skill-label"><span>Front-end (HTML/CSS/JS)</span><span>80%</span></div><div class="skill-bar"><div class="skill-fill" style="--target:80%"></div></div></div>
-                        <div class="skill-item"><div class="skill-label"><span>Suporte Técnico N1/N2</span><span>95%</span></div><div class="skill-bar"><div class="skill-fill" style="--target:95%"></div></div></div>
-                        <div class="skill-item"><div class="skill-label"><span>ITIL / COBIT</span><span>78%</span></div><div class="skill-bar"><div class="skill-fill" style="--target:78%"></div></div></div>
-                    </div>
-                </div>
-
-                <!-- Experiência -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-briefcase"></i> Experiência</div>
-                    <div class="timeline">
-                        <div class="tl-item">
-                            <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
-                            <div class="tl-content">
-                                <div class="tl-company">Atual</div>
-                                <div class="tl-role">Desenvolvedor de Automação & IA</div>
-                                <div class="tl-period">2023 — Presente</div>
-                                <div class="tl-desc">Criação de workflows inteligentes com n8n, orquestração de Multi-Agentes de IA, integrações via APIs REST e desenvolvimento de interfaces front-end modernas.</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
-                            <div class="tl-content">
-                                <div class="tl-company">Logística & TI</div>
-                                <div class="tl-role">Analista de Suporte Técnico N1/N2</div>
-                                <div class="tl-period">2021 — 2023</div>
-                                <div class="tl-desc">Suporte técnico em ambiente corporativo, gestão de infraestrutura, resolução de problemas críticos e implementação de processos ITIL. Foco em SLA e satisfação do cliente.</div>
-                            </div>
-                        </div>
-                        <div class="tl-item">
-                            <div class="tl-left"><div class="tl-dot"></div><div class="tl-line"></div></div>
-                            <div class="tl-content">
-                                <div class="tl-company">Freelance</div>
-                                <div class="tl-role">Desenvolvedor Front-end</div>
-                                <div class="tl-period">2020 — 2021</div>
-                                <div class="tl-desc">Desenvolvimento de interfaces web, landing pages e ferramentas interativas para clientes diversos. Início da jornada com automação de processos digitais.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Projetos -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-layer-group"></i> Projetos em Destaque</div>
-                    <div class="cert-list">
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-gears"></i></div><div class="cert-name">Automação de Logística & Rastreio</div><div class="cert-issuer">n8n · CRM · NF-e</div></div>
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-brain"></i></div><div class="cert-name">Sistema de Multi-Agentes de IA</div><div class="cert-issuer">n8n · LLM · APIs</div></div>
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-envelope"></i></div><div class="cert-name">Ferramenta de E-mail com IA</div><div class="cert-issuer">Front-end · n8n · LLM</div></div>
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-gamepad"></i></div><div class="cert-name">Drakkar & Valhalla Gate — Mini Games</div><div class="cert-issuer">Three.js · Vanilla JS</div></div>
-                    </div>
-                </div>
-
-                <!-- Educação -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-graduation-cap"></i> Educação</div>
-                    <div class="edu-grid">
-                        <div class="edu-card">
-                            <div class="edu-inst">Graduação</div>
-                            <div class="edu-course">Tecnologia da Informação</div>
-                            <div class="edu-period">Em andamento</div>
-                        </div>
-                        <div class="edu-card">
-                            <div class="edu-inst">Formação Técnica</div>
-                            <div class="edu-course">Suporte em TI & Infraestrutura</div>
-                            <div class="edu-period">Concluído</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Certificações -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-certificate"></i> Certificações</div>
-                    <div class="cert-list">
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-check-circle"></i></div><div class="cert-name">ITIL Foundation v4</div><div class="cert-issuer">Gestão de Serviços de TI</div></div>
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-check-circle"></i></div><div class="cert-name">n8n — Automação Avançada</div><div class="cert-issuer">Workflows & Integrações</div></div>
-                        <div class="cert-item"><div class="cert-icon"><i class="fa-solid fa-check-circle"></i></div><div class="cert-name">Engenharia de Prompt & IA Generativa</div><div class="cert-issuer">LLMs & Agentes</div></div>
-                    </div>
-                </div>
-
-                <!-- Contatos -->
-                <div class="ab-section">
-                    <div class="ab-section-title"><i class="fa-solid fa-link"></i> Contatos & Links</div>
-                    <div class="contact-links">
-                        <a class="cl-item" href="mailto:matheus.luis.lopes.silva@outlook.com"><i class="fa-solid fa-envelope"></i> matheus.luis.lopes.silva@outlook.com</a>
-                        <a class="cl-item" href="https://wa.me/5511913119373" target="_blank"><i class="fa-brands fa-whatsapp"></i> (11) 91311-9373</a>
-                        <a class="cl-item" href="https://www.linkedin.com/in/matheusluislopessilva/" target="_blank"><i class="fa-brands fa-linkedin-in"></i> LinkedIn</a>
-                        <a class="cl-item" href="https://mmatheusllsilva.github.io/Drakkar-game/" target="_blank"><i class="fa-solid fa-gamepad"></i> Mini Games</a>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ZOOM OVERLAY -->
-    <div id="zoomOverlay" onclick="closeZoom()" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.95);align-items:center;justify-content:center;cursor:zoom-out;">
-        <img id="zoomImg" src="" style="max-width:95vw;max-height:90vh;object-fit:contain;border-radius:10px;box-shadow:0 0 60px rgba(0,209,255,.25);">
-    </div>
-
-    <script>
-    // ─── EmailJS Init ─────────────────────────────────────
-    // IMPORTANTE: substitua 'YOUR_PUBLIC_KEY' pela sua chave pública do EmailJS
-    // e 'YOUR_SERVICE_ID' e 'YOUR_TEMPLATE_ID' pelos seus IDs
-    emailjs.init('vsmRaCqtUgCDKZMIJ');
-
-    async function sendContactForm() {
-        const name    = document.getElementById('cf-name').value.trim();
-        const email   = document.getElementById('cf-email').value.trim();
-        const subject = document.getElementById('cf-subject').value.trim();
-        const message = document.getElementById('cf-message').value.trim();
-        const status  = document.getElementById('cf-status');
-        const btn     = document.getElementById('cf-submit');
-
-        if (!name || !email || !message) {
-            status.className = 'error';
-            status.textContent = '⚠ Preencha nome, e-mail e mensagem.';
-            return;
-        }
-
-        btn.classList.add('loading');
-        btn.disabled = true;
-        status.className = ''; status.style.display = 'none';
-
-        try {
-            await emailjs.send('service_9s38hjv', 'template_cdpm28l', {
-                from_name:    name,
-                from_email:   email,
-                subject:      subject || 'Contato via Portfólio',
-                message:      message,
-                to_email:     'matheus.luis.lopes.silva@outlook.com',
-            });
-            status.className = 'success';
-            status.textContent = '✓ Mensagem enviada! Matheus responderá em breve.';
-            document.getElementById('cf-name').value = '';
-            document.getElementById('cf-email').value = '';
-            document.getElementById('cf-subject').value = '';
-            document.getElementById('cf-message').value = '';
-        } catch(err) {
-            status.className = 'error';
-            status.textContent = '✗ Falha ao enviar. Tente pelo WhatsApp ou e-mail direto.';
-        }
-
-        btn.classList.remove('loading');
-        btn.disabled = false;
-    }
-
-    // ─── SKILL BARS ANIMATION ────────────────────────────
-    function animateSkills() {
-        document.querySelectorAll('.skill-fill').forEach(el => {
-            el.style.width = el.style.getPropertyValue('--target') || getComputedStyle(el).getPropertyValue('--target');
-        });
-    }
-
-    // ─── NAVIGATION ──────────────────────────────────────
-    const roboLayer      = document.getElementById('roboLayer');
-    const viking         = document.getElementById('viking');
-    const chatAi         = document.getElementById('chatAi');
-    const projectsScreen = document.getElementById('projectsScreen');
-    const gamesScreen    = document.getElementById('gamesScreen');
-    const contactScreen  = document.getElementById('contactScreen');
-    const aboutScreen    = document.getElementById('aboutScreen');
-    const projectTrack   = document.getElementById('projectTrack');
-
-    function portalIn(cb) {
-        roboLayer.classList.add('portal-active');
-        chatAi.style.opacity = '0'; chatAi.style.pointerEvents = 'none';
-        setTimeout(cb, 600);
-    }
-    function portalOut(screen) {
-        screen.classList.remove('active');
-        setTimeout(() => {
-            if (!projectsScreen.classList.contains('active') &&
-                !gamesScreen.classList.contains('active') &&
-                !contactScreen.classList.contains('active') &&
-                !aboutScreen.classList.contains('active')) {
-                roboLayer.classList.remove('portal-active');
-                chatAi.style.opacity = '1';
-                chatAi.style.pointerEvents = 'auto';
-            }
-        }, 500);
-    }
-
-    function openProjects()  { portalIn(() => projectsScreen.classList.add('active')); }
-    function closeProjects() { portalOut(projectsScreen); }
-    function openGames()     { portalIn(() => gamesScreen.classList.add('active')); }
-    function closeGames()    { portalOut(gamesScreen); }
-    function openContact()   { portalIn(() => contactScreen.classList.add('active')); }
-    function closeContact()  { portalOut(contactScreen); }
-    function openAbout()     { portalIn(() => { aboutScreen.classList.add('active'); setTimeout(animateSkills, 400); }); }
-    function closeAbout()    { portalOut(aboutScreen); }
-
-    // Nav bindings
-    document.getElementById('btn-projetos').addEventListener('click',    e => { e.preventDefault(); openProjects(); });
-    document.getElementById('btn-game-nav').addEventListener('click',    e => { e.preventDefault(); openGames(); });
-    document.getElementById('btn-contato-nav').addEventListener('click', e => { e.preventDefault(); openContact(); });
-    document.getElementById('btn-sobre-nav').addEventListener('click',   e => { e.preventDefault(); openAbout(); });
-    document.getElementById('btn-projetos-side').addEventListener('click', e => { e.preventDefault(); openProjects(); });
-    document.getElementById('link-game-side').addEventListener('click',    e => { e.preventDefault(); openGames(); });
-    document.getElementById('link-contato-side').addEventListener('click', e => { e.preventDefault(); openContact(); });
-    document.getElementById('link-sobre-side').addEventListener('click',   e => { e.preventDefault(); openAbout(); });
-
-    // Zoom
-    function toggleZoom(el) {
-        const img = el.querySelector('img');
-        const z = document.getElementById('zoomImg');
-        if (img && z) { z.src = img.src; document.getElementById('zoomOverlay').style.display = 'flex'; }
-    }
-    function closeZoom() { document.getElementById('zoomOverlay').style.display = 'none'; }
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-            closeZoom();
-            if (!tutorialActive) { closeProjects(); closeGames(); closeContact(); closeAbout(); }
-        }
-    });
-
-    // Carousel
-    let currentSlide = 0;
-    function moveSlide(dir) {
-        const slides = document.querySelectorAll('.project-slide');
-        if (!slides.length) return;
-        currentSlide = (currentSlide + dir + slides.length) % slides.length;
-        projectTrack.style.transform = `translateX(${-currentSlide * slides[0].getBoundingClientRect().width}px)`;
-    }
-
-    // Parallax
-    window.addEventListener('mousemove', e => {
-        if (!roboLayer.classList.contains('portal-active')) {
-            const mask = `radial-gradient(circle 220px at ${e.clientX}px ${e.clientY}px,black 0%,transparent 100%)`;
-            roboLayer.style.webkitMaskImage = mask;
-            roboLayer.style.maskImage = mask;
-        }
-        viking.style.transform = `translate(${(e.clientX - window.innerWidth/2)/60}px,${(e.clientY - window.innerHeight/2)/60}px)`;
-    });
-
-    // Chat
-    const userInput   = document.getElementById('userInput');
-    const sendBtn     = document.getElementById('sendBtn');
-    const chatMessages= document.getElementById('chatMessages');
-
-    async function sendMessage() {
-        const msg = userInput.value.trim();
-        if (!msg) return;
-        chatMessages.innerHTML += `<div class="msg user">${msg}</div>`;
-        userInput.value = ''; chatMessages.scrollTop = chatMessages.scrollHeight;
-        try {
-            const res  = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ message: msg }) });
-            const data = await res.json();
-            chatMessages.innerHTML += `<div class="msg bot">${data.response}</div>`;
-        } catch { chatMessages.innerHTML += `<div class="msg bot" style="color:#ff4b4b;">O sinal falhou, mas Matheus foi notificado!</div>`; }
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    sendBtn.addEventListener('click', sendMessage);
-    userInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendMessage(); });
-
-    // ─── TUTORIAL ────────────────────────────────────────
-    let tutorialActive = false, currentStep = 0, prevSpotlightEl = null;
-
-    const STEPS = [
-        { targetId:null, icon:'🌊', title:'O Fundo Parallax', text:'Mova o mouse pela tela e veja a imagem Viking se deslocar criando <strong>profundidade</strong>.', cardPos:{top:'50%',left:'50%',transform:'translate(-50%,-50%)'}, arrow:'none' },
-        { targetId:'roboLayer', icon:'✨', title:'Efeito Portal', text:'Esta camada usa uma <strong>máscara radial dinâmica</strong> que segue o cursor — criando uma janela que revela outra imagem. CSS + JS, zero biblioteca.', cardPos:{top:'50%',left:'50%',transform:'translate(-50%,-50%)'}, arrow:'none' },
-        { targetId:'chatAi', icon:'🤖', title:'Assistente de IA', text:'O <strong>Matheus.AI</strong> está conectado via webhook ao n8n. Faça perguntas sobre projetos, habilidades ou qualquer coisa — resposta em tempo real!', cardPos:{bottom:'230px',right:'400px'}, arrow:'right' },
-        { targetId:'main-nav', icon:'🧭', title:'Menu Superior', text:'Acesso rápido às seções: <strong>Projetos</strong>, Mini Games, <strong>Contato</strong> e Sobre.', cardPos:{top:'100px',left:'50%',transform:'translateX(-50%)'}, arrow:'top' },
-        { targetId:'side-panel', icon:'⚡', title:'Menu Lateral', text:'Menu alternativo com ícones animados e tooltips. O <strong>ponto verde</strong> indica novidades!', cardPos:{top:'50%',left:'130px',transform:'translateY(-50%)'}, arrow:'left' },
-        { targetId:'btn-projetos-side', icon:'📁', title:'Projetos Reais', text:'Carrossel com cases de automação e IA — cada um com prints clicáveis para zoom em tela cheia.', cardPos:{top:'50%',left:'130px',transform:'translateY(-50%)'}, arrow:'left', action:() => openProjects(), actionAfter:true },
-        { targetId:null, icon:'🎮', title:'2 Mini Games', text:'<em>Drakkar — Mar do Norte</em> e <em>Valhalla Gate</em> (3D em Three.js). Cada jogo é um projeto técnico!', cardPos:{top:'50%',left:'50%',transform:'translate(-50%,-50%)'}, arrow:'none', action:() => { closeProjects(); setTimeout(() => openGames(), 700); }, actionAfter:true },
-        { targetId:null, icon:'🏆', title:'Tudo pronto!', text:'Portfólio 100% em <strong>HTML, CSS e JS puro</strong>. Explore os projetos, converse com a IA, jogue os games ou entre em contato!', cardPos:{top:'50%',left:'50%',transform:'translate(-50%,-50%)'}, arrow:'none', action:() => closeGames(), isLast:true },
-    ];
-
-    function startTutorial() { document.getElementById('tut-welcome').classList.add('hidden'); tutorialActive=true; currentStep=0; renderStep(); }
-    function skipTutorial()  { document.getElementById('tut-welcome').classList.add('hidden'); endTutorial(); }
-    function endTutorial()   {
-        tutorialActive=false;
-        ['tut-curtain','tut-card','tut-pointer','tut-finish'].forEach(id => document.getElementById(id).classList.add('hidden'));
-        removeSpotlight(); closeProjects(); closeGames(); closeContact(); closeAbout();
-    }
-    function removeSpotlight() { if(prevSpotlightEl){ prevSpotlightEl.classList.remove('tut-spotlight'); prevSpotlightEl.style.zIndex=''; prevSpotlightEl=null; }}
-    function applySpotlight(el){ removeSpotlight(); if(!el) return; el.classList.add('tut-spotlight'); prevSpotlightEl=el; }
-    function positionCard(step){
-        const card=document.getElementById('tut-card');
-        card.style.top=card.style.left=card.style.right=card.style.bottom=card.style.transform='';
-        card.className=card.className.replace(/arrow-\w+/g,'').trim();
-        Object.entries(step.cardPos).forEach(([k,v])=>card.style[k]=v);
-        card.classList.add('arrow-'+(step.arrow||'none'));
-    }
-    function buildProgress(){
-        const c=document.getElementById('tut-progress'); c.innerHTML='';
-        STEPS.forEach((_,i)=>{ const d=document.createElement('div'); d.className='tut-dot'+(i===currentStep?' active':i<currentStep?' done':''); c.appendChild(d); });
-    }
-    function renderStep(){
-        const step=STEPS[currentStep];
-        if(step.action&&!step.actionAfter) step.action();
-        applySpotlight(step.targetId ? document.getElementById(step.targetId) : null);
-        const curtain=document.getElementById('tut-curtain');
-        curtain.classList.remove('hidden');
-        document.getElementById('tut-step-label').textContent=`PASSO ${currentStep+1} DE ${STEPS.length}`;
-        document.getElementById('tut-card-icon').textContent=step.icon;
-        document.getElementById('tut-title').textContent=step.title;
-        document.getElementById('tut-text').innerHTML=step.text;
-        positionCard(step); buildProgress();
-        document.getElementById('tut-prev').style.visibility=currentStep===0?'hidden':'visible';
-        document.getElementById('tut-next').textContent=step.isLast?'Finalizar ✓':'Próximo →';
-        document.getElementById('tut-card').classList.remove('hidden');
-        if(step.action&&step.actionAfter) setTimeout(()=>step.action(),200);
-    }
-    function nextStep(){ const s=STEPS[currentStep]; if(s.isLast){ showFinish(); return; } removeSpotlight(); currentStep++; renderStep(); }
-    function prevStep(){ if(currentStep===0) return; const s=STEPS[currentStep]; if(s.action&&s.actionAfter){ closeProjects(); closeGames(); } removeSpotlight(); currentStep--; renderStep(); }
-    function advanceTutorial(){ if(tutorialActive) nextStep(); }
-    function showFinish(){
-        document.getElementById('tut-curtain').classList.add('hidden');
-        document.getElementById('tut-card').classList.add('hidden');
-        removeSpotlight(); closeProjects(); closeGames();
-        setTimeout(()=>document.getElementById('tut-finish').classList.remove('hidden'),400);
-    }
-    </script>
+<script src="script.js"></script>
 </body>
 </html>
