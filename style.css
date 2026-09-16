@@ -449,16 +449,19 @@ button { font: inherit; }
 }
 .project-modal__close {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
+  top: 14px;
+  right: 14px;
+  width: 42px;
+  height: 42px;
   border: none;
   border-radius: 50%;
   background: rgba(255,255,255,0.08);
   color: var(--color-branco-sinal);
   font-size: 22px;
+  line-height: 1;
   cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.18);
 }
 .project-modal__content {
   display: grid;
@@ -473,9 +476,10 @@ button { font: inherit; }
 .project-modal__image {
   display: block;
   width: 100%;
-  min-height: 380px;
+  height: clamp(260px, 52vh, 520px);
+  min-height: 260px;
   max-height: 62vh;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   border-radius: 16px;
   border: 1px solid rgba(79,209,232,0.3);
@@ -734,15 +738,177 @@ button { font: inherit; }
 
 /* RESPONSIVO */
 @media (max-width: 720px) {
+  .nav-inner {
+    padding: 12px 16px;
+  }
+
+  .nav-brand {
+    font-size: 14px;
+  }
+
+  .nav-avatar {
+    width: 34px;
+    height: 34px;
+  }
+
   .nav-links { display: none; }
-  .hero-title { font-size: 36px; }
-  .section-title { font-size: 28px; }
-  .chat-popup { width: calc(100vw - 32px); right: 16px; }
+
+  .hero {
+    min-height: 88vh;
+    padding: 104px 18px 52px;
+  }
+
+  .hero-content {
+    max-width: 100%;
+  }
+
+  .hero-title {
+    gap: 2px;
+  }
+
+  .title-word {
+    font-size: clamp(2.6rem, 15vw, 4rem);
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 22rem;
+    margin: 0 auto 24px;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: min(100%, 280px);
+    margin: 0 auto;
+  }
+
+  .btn,
+  .btn-lg {
+    width: 100%;
+    text-align: center;
+    padding: 12px 18px;
+  }
+
+  .hero-reveal {
+    gap: 8px;
+    margin-top: 40px;
+    max-width: 100%;
+  }
+
+  .reveal-item {
+    font-size: 10px;
+    padding: 5px 9px;
+  }
+
+  .scroll-cue {
+    display: none;
+  }
+
+  .section {
+    padding: 72px 18px;
+  }
+
+  .section-title {
+    font-size: 28px;
+    line-height: 1.2;
+  }
+
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .project-card {
+    padding: 18px;
+  }
+
+  .project-card h3 {
+    font-size: 17px;
+  }
+
+  .badge {
+    font-size: 10px;
+  }
+
+  .chat-popup {
+    width: calc(100vw - 24px);
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .chat-input-row input {
+    font-size: 13px;
+  }
+
+  .project-modal {
+    padding: 12px;
+  }
+
+  .project-modal__dialog {
+    width: min(100%, 92vw);
+    max-height: 90vh;
+    padding: 16px 14px 14px;
+    border-radius: 18px;
+  }
+
+  .project-modal__close {
+    top: 10px;
+    right: 10px;
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
   .project-modal__content {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
+
+  .project-modal__image {
+    height: clamp(220px, 36vh, 320px);
+    min-height: 220px;
+    max-height: 48vh;
+    object-fit: cover;
+  }
+
+  .project-modal__nav {
+    width: 34px;
+    height: 34px;
+    font-size: 24px;
+  }
+
+  .project-modal__details h3 {
+    font-size: 1.5rem;
+  }
+
   .profile-lightbox__image {
     width: min(82vw, 360px);
+  }
+}
+
+@media (max-width: 420px) {
+  .hero {
+    padding-top: 90px;
+  }
+
+  .hero-subtitle {
+    font-size: 14px;
+  }
+
+  .section-title {
+    font-size: 24px;
+  }
+
+  .project-card p {
+    font-size: 13px;
+  }
+
+  .chat-popup {
+    width: calc(100vw - 16px);
+    right: 8px;
+    bottom: 8px;
   }
 }
 
