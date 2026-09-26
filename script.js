@@ -282,6 +282,7 @@ const galleryLightboxClose = document.getElementById('galleryLightboxClose');
 const galleryImage = document.getElementById('galleryImage');
 const galleryPrev = document.getElementById('galleryPrev');
 const galleryNext = document.getElementById('galleryNext');
+const galleryViewport = document.querySelector('.gallery-marquee__viewport');
 
 const galleryImages = [
   { src: 'WhatsApp Image 2026-09-20 at 13.37.16.jpeg', alt: 'Público assistindo ao Databricks Data + AI World Tour em São Paulo' },
@@ -299,6 +300,36 @@ const galleryImages = [
 
 let activeGalleryIndex = 0;
 
+function setupGalleryLazyLoading() {
+  if (!galleryViewport || !('IntersectionObserver' in window)) return;
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      const img = entry.target;
+      const src = img.dataset.src;
+      if (!src) {
+        obs.unobserve(img);
+        return;
+      }
+
+      img.src = src;
+      img.removeAttribute('data-src');
+      img.decoding = 'async';
+      img.loading = 'lazy';
+      img.fetchPriority = 'low';
+      obs.unobserve(img);
+    });
+  }, {
+    root: galleryViewport,
+    rootMargin: '200px 0px',
+    threshold: 0.05
+  });
+
+  galleryTrack.querySelectorAll('img[data-src]').forEach((img) => observer.observe(img));
+}
+
 function renderMarquee() {
   if (!galleryTrack) return;
 
@@ -309,10 +340,20 @@ function renderMarquee() {
     const originalIndex = i % galleryImages.length;
     const item = document.createElement('div');
     item.className = 'gallery-marquee__item';
-    item.innerHTML = `<img src="${image.src}" alt="${image.alt}" loading="lazy">`;
+
+    const img = document.createElement('img');
+    img.dataset.src = image.src;
+    img.alt = image.alt;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.fetchPriority = 'low';
+
+    item.appendChild(img);
     item.addEventListener('click', () => openGalleryLightbox(originalIndex));
     galleryTrack.appendChild(item);
   });
+
+  setupGalleryLazyLoading();
 }
 
 function updateGalleryLightbox() {
