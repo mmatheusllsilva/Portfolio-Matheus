@@ -287,7 +287,14 @@ const galleryImages = [
   { src: 'WhatsApp Image 2026-09-20 at 13.37.16.jpeg', alt: 'Público assistindo ao Databricks Data + AI World Tour em São Paulo' },
   { src: 'WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg', alt: 'Vista geral do palco e da plateia no evento Databricks' },
   { src: 'WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg', alt: 'Networking e comunidade durante o evento Databricks' },
-  { src: 'WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg', alt: 'Cena do estande e ambiente do evento em cenário de tecnologia' }
+  { src: 'WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg', alt: 'Cena do estande e ambiente do evento em cenário de tecnologia' },
+  { src: 'WhatsApp Image 2026-09-20 at 13.37.18 (5).jpeg', alt: 'Registro visual do ambiente do evento e dos visitantes' },
+  { src: 'Foto1.jpeg', alt: 'Registro do evento com foco em palestrantes e plateia' },
+  { src: 'Foto 2.jpeg', alt: 'Momento de comunidade e networking no evento' },
+  { src: 'foto3.jpeg', alt: 'Ambiente do evento com iluminação e estrutura de divulgação' },
+  { src: 'foto4.jpeg', alt: 'Cena do evento com presença forte da comunidade e público' },
+  { src: 'foto5.jpeg', alt: 'Registro do ambiente do Data + AI World Tour em São Paulo' },
+  { src: 'foto6.jpeg', alt: 'Detalhe do estande e da experiência do evento' }
 ];
 
 let activeGalleryIndex = 0;
