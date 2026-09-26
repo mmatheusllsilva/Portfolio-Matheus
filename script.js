@@ -277,99 +277,89 @@ document.querySelectorAll('.project-card').forEach((card) => {
 });
 
 const galleryTrack = document.getElementById('galleryTrack');
-const galleryPrevScroll = document.getElementById('galleryPrevScroll');
-const galleryNextScroll = document.getElementById('galleryNextScroll');
-const galleryModal = document.getElementById('galleryModal');
-const galleryModalClose = document.getElementById('galleryModalClose');
+const galleryLightbox = document.getElementById('galleryLightbox');
+const galleryLightboxClose = document.getElementById('galleryLightboxClose');
 const galleryImage = document.getElementById('galleryImage');
 const galleryPrev = document.getElementById('galleryPrev');
 const galleryNext = document.getElementById('galleryNext');
 
 const galleryImages = [
-  'WhatsApp Image 2026-09-20 at 13.37.16.jpeg',
-  'WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg',
-  'WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg',
-  'WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg'
+  { src: 'WhatsApp Image 2026-09-20 at 13.37.16.jpeg', alt: 'Público assistindo ao Databricks Data + AI World Tour em São Paulo' },
+  { src: 'WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg', alt: 'Vista geral do palco e da plateia no evento Databricks' },
+  { src: 'WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg', alt: 'Networking e comunidade durante o evento Databricks' },
+  { src: 'WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg', alt: 'Cena do estande e ambiente do evento em cenário de tecnologia' }
 ];
 
 let activeGalleryIndex = 0;
 
-function updateGalleryModal() {
-  galleryImage.src = galleryImages[activeGalleryIndex];
-  galleryImage.alt = `Foto do evento ${activeGalleryIndex + 1}`;
+function renderMarquee() {
+  if (!galleryTrack) return;
+
+  galleryTrack.innerHTML = "";
+  const repeated = [...galleryImages, ...galleryImages];
+
+  repeated.forEach((image, i) => {
+    const originalIndex = i % galleryImages.length;
+    const item = document.createElement('div');
+    item.className = 'gallery-marquee__item';
+    item.innerHTML = `<img src="${image.src}" alt="${image.alt}" loading="lazy">`;
+    item.addEventListener('click', () => openGalleryLightbox(originalIndex));
+    galleryTrack.appendChild(item);
+  });
 }
 
-function openGalleryModal(index) {
+function updateGalleryLightbox() {
+  if (!galleryImage) return;
+  galleryImage.src = galleryImages[activeGalleryIndex].src;
+  galleryImage.alt = galleryImages[activeGalleryIndex].alt;
+}
+
+function openGalleryLightbox(index) {
+  if (!galleryLightbox || !galleryImage) return;
   activeGalleryIndex = index;
-  updateGalleryModal();
-  galleryModal.hidden = false;
+  updateGalleryLightbox();
+  galleryLightbox.hidden = false;
 }
 
-function closeGalleryModal() {
-  galleryModal.hidden = true;
+function closeGalleryLightbox() {
+  if (!galleryLightbox) return;
+  galleryLightbox.hidden = true;
 }
 
-if (galleryPrevScroll) {
-  galleryPrevScroll.addEventListener('click', () => {
-    galleryTrack.scrollBy({ left: -260, behavior: 'smooth' });
-  });
+function changeGalleryLightbox(direction) {
+  activeGalleryIndex = (activeGalleryIndex + direction + galleryImages.length) % galleryImages.length;
+  updateGalleryLightbox();
 }
-
-if (galleryNextScroll) {
-  galleryNextScroll.addEventListener('click', () => {
-    galleryTrack.scrollBy({ left: 260, behavior: 'smooth' });
-  });
-}
-
-document.querySelectorAll('.gallery-item').forEach((item) => {
-  item.addEventListener('click', () => {
-    openGalleryModal(Number(item.dataset.galleryIndex));
-  });
-});
 
 if (galleryPrev) {
-  galleryPrev.addEventListener('click', () => {
-    activeGalleryIndex = (activeGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
-    updateGalleryModal();
-  });
+  galleryPrev.addEventListener('click', () => changeGalleryLightbox(-1));
 }
 
 if (galleryNext) {
-  galleryNext.addEventListener('click', () => {
-    activeGalleryIndex = (activeGalleryIndex + 1) % galleryImages.length;
-    updateGalleryModal();
-  });
+  galleryNext.addEventListener('click', () => changeGalleryLightbox(1));
 }
 
-if (galleryModalClose) {
-  galleryModalClose.addEventListener('click', closeGalleryModal);
+if (galleryLightboxClose) {
+  galleryLightboxClose.addEventListener('click', closeGalleryLightbox);
 }
 
-if (galleryModal) {
-  galleryModal.addEventListener('click', (event) => {
+if (galleryLightbox) {
+  galleryLightbox.addEventListener('click', (event) => {
     if (event.target.hasAttribute('data-gallery-close')) {
-      closeGalleryModal();
+      closeGalleryLightbox();
     }
   });
 }
 
 window.addEventListener('keydown', (event) => {
-  if (galleryModal.hidden) return;
-
-  if (event.key === 'Escape') {
-    closeGalleryModal();
-  }
-
-  if (event.key === 'ArrowRight') {
-    activeGalleryIndex = (activeGalleryIndex + 1) % galleryImages.length;
-    updateGalleryModal();
-  }
-
-  if (event.key === 'ArrowLeft') {
-    activeGalleryIndex = (activeGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
-    updateGalleryModal();
+  if (galleryLightbox && !galleryLightbox.hidden) {
+    if (event.key === 'Escape') closeGalleryLightbox();
+    if (event.key === 'ArrowRight') changeGalleryLightbox(1);
+    if (event.key === 'ArrowLeft') changeGalleryLightbox(-1);
   }
 });
+
+renderMarquee();
 
 const chatFab = document.getElementById('chatFab');
 const chatPopup = document.getElementById('chatPopup');

@@ -557,105 +557,102 @@ button { font: inherit; }
 }
 
 /* GALLERY */
-.gallery-carousel {
-  position: relative;
-  margin-top: 24px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.gallery-marquee{
+  position:relative;
+  width:100%;
+  overflow:hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+          mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
 }
-.gallery-track {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(79,209,232,0.7) transparent;
-  padding: 4px 2px 8px;
-  flex: 1;
-  scroll-snap-type: x proximity;
+.gallery-marquee__viewport{ overflow:hidden; width:100%; }
+.gallery-marquee__track{
+  display:flex;
+  gap:16px;
+  width:max-content;
+  animation: marquee-scroll 32s linear infinite;
 }
-.gallery-track::-webkit-scrollbar { height: 8px; }
-.gallery-track::-webkit-scrollbar-thumb {
-  background: rgba(79,209,232,0.7);
-  border-radius: 999px;
+.gallery-marquee:hover .gallery-marquee__track{
+  animation-play-state: paused;
 }
-.gallery-item {
-  flex: 0 0 calc((100% - 48px) / 4);
-  min-width: 220px;
-  height: 220px;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: var(--radius-card);
-  background: var(--color-grafite-profundo);
-  overflow: hidden;
-  cursor: pointer;
-  padding: 0;
-  scroll-snap-align: start;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.16);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+.gallery-marquee__item{
+  flex:0 0 clamp(220px, 24vw, 330px);
+  width:clamp(220px, 24vw, 330px);
+  height:clamp(180px, 18vw, 250px);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:var(--radius-card);
+  background:var(--color-grafite-profundo);
+  overflow:hidden;
+  cursor:pointer;
+  padding:0;
+  box-shadow:0 12px 28px rgba(0,0,0,0.18);
+  transition:transform 0.2s ease, border-color 0.2s ease;
 }
-.gallery-item:hover,
-.gallery-item:focus-visible {
+.gallery-marquee__item:hover,
+.gallery-marquee__item:focus-visible {
   transform: translateY(-4px);
   border-color: rgba(95, 220, 255, 0.35);
-  outline: none;
+  outline:none;
 }
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
+.gallery-marquee__item img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  user-select:none;
+  pointer-events:none;
 }
-.gallery-arrow {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: rgba(16,18,20,0.8);
-  color: var(--color-branco-sinal);
-  font-size: 28px;
-  line-height: 1;
-  cursor: pointer;
-  flex-shrink: 0;
+@keyframes marquee-scroll{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
 }
-.gallery-arrow:hover { border-color: var(--color-ciano-sinal); }
-.gallery-modal {
+.gallery-lightbox {
   position: fixed;
   inset: 0;
   z-index: 500;
   display: grid;
   place-items: center;
-  background: rgba(8, 10, 12, 0.9);
+  background: rgba(8, 10, 12, 0.88);
   padding: 24px;
 }
-.gallery-modal[hidden] { display: none; }
-.gallery-modal__backdrop {
+.gallery-lightbox[hidden] { display: none; }
+.gallery-lightbox__backdrop {
   position: absolute;
   inset: 0;
 }
-.gallery-modal__dialog {
+.gallery-lightbox__dialog {
   position: relative;
   z-index: 1;
-  width: min(90vw, 980px);
   display: grid;
   place-items: center;
-  background: transparent;
+  width: min(90vw, 980px);
 }
-.gallery-modal__dialog .project-modal__image {
-  max-height: 78vh;
-  width: auto;
+.gallery-lightbox__dialog .project-modal__image {
   max-width: 100%;
+  max-height: 78vh;
   object-fit: contain;
   border-radius: 16px;
   box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+  transition: opacity 0.25s ease, transform 0.25s ease;
 }
-@media (max-width: 900px) {
-  .gallery-item { flex-basis: calc((100% - 16px) / 2); }
+.gallery-lightbox__close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: var(--color-branco-sinal);
+  font-size: 24px;
+  cursor: pointer;
 }
-@media (max-width: 560px) {
-  .gallery-carousel { gap: 8px; }
-  .gallery-arrow { display: none; }
-  .gallery-item { flex-basis: 85%; min-width: 260px; }
+@media (max-width: 640px) {
+  .gallery-item {
+    flex-basis: 72vw;
+    width: 72vw;
+    height: 220px;
+  }
 }
 
 /* CTA CURRÍCULO */
