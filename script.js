@@ -20,42 +20,42 @@ const projectData = {
     title: 'Bot de suporte com IA Slack',
     description: 'O bot atua no canal de suporte interno, fazendo o primeiro contato com o solicitante para validar a demanda e buscar o contexto do ticket em tempo real antes mesmo de o agente responder. Ele acessa o ticket, verifica status, observações e traz um retorno mais rápido sobre o que está acontecendo com a solicitação, além de priorizar tarefas e alinhar quem é o responsável.',
     stack: ['N8N', 'IA', 'SLACK', 'AUTOMAÇÃO'],
-    images: ['IA Canal do Slack.jpeg']
+    images: ['assets/images/ia/ia-canal-slack.jpeg']
   },
   'snippet-generator': {
     category: 'IA + documentação',
     title: 'IA geradora de Snippet',
     description: 'Snippet seria um modelo de documentação para equipamentos. Antes, a equipe precisava abrir cada item e copiar um modelo já existente no sistema admin, um por um. Com a IA, integrei o fluxo com Snowflake para buscar o número de série, modelo, placa e códigos do equipamento e criar o snippet automaticamente com base na regra de negócio da operação.',
     stack: ['IA', 'SNOWFLAKE', 'DOCUMENTAÇÃO', 'AUTOMAÇÃO'],
-    images: ['IA gerador de snippet.jpeg']
+    images: ['assets/images/ia/ia-gerador-snippet.jpeg']
   },
   'faq-ai': {
     category: 'FAQ + IA',
     title: 'IA para FAQ de suporte técnico',
     description: 'Desenvolvemos um assistente para apoiar o suporte técnico com base em dados do cliente e da FAQ interna. O fluxo usa embeddings no Supabase e o modelo Claude Haiku 3 para responder consultas em linguagem natural, com recuperação contextualizada e tradução de vetores para trazer respostas mais precisas e rápidas.',
     stack: ['IA', 'SUPABASE', 'CLAUDE', 'EMBEDDINGS'],
-    images: ['IA guia de suporte.jpeg']
+    images: ['assets/images/ia/ia-guia-suporte.jpeg']
   },
   'multi-agent': {
     category: 'Multiagentes',
     title: 'Sistema multiagente de IA',
     description: 'O fluxo multiagente orquestra diferentes tarefas de IA em sequência, incluindo transcrição de áudio, validação de contexto e execução de passos automatizados. Isso permite responder demandas complexas com menos intervenção manual e com melhor rastreabilidade do processo.',
     stack: ['N8N', 'IA', 'ÁUDIO', 'AUTOMAÇÃO'],
-    images: ['multiagente.jpeg']
+    images: ['assets/images/outros/sistema-multiagente.jpeg']
   },
   'logistica': {
     category: 'Rastreamento',
     title: 'Rastreio de logística automatizado',
     description: 'Esse projeto era acionado quando o ticket entrava em status “A caminho” no CRM. O fluxo validava se havia envio de equipamento ou periférico, identificava a transportadora e enviava um e-mail com link direto de consulta, dados de rastreio e NF, algo que antes não existia no processo.',
     stack: ['AUTOMAÇÃO', 'CRM', 'LOGÍSTICA'],
-    images: ['projeto-codigo-de-rastreio.jpeg']
+    images: ['assets/images/outros/rastreio-logistica.jpeg']
   },
   'gestao-bia': {
     category: 'Gestão',
     title: 'Aplicativo Web de gestão de contratos',
     description: 'Aplicação open source para gestão de contratos com dados salvos no cache do navegador. Isso significa que a informação continua disponível mesmo após desligar a máquina, desde que o ambiente do navegador seja preservado; os dados só somem se o cache for limpo ou se alguém apague o armazenamento local.',
     stack: ['OPEN SOURCE', 'LOCAL STORAGE', 'GESTÃO'],
-    images: ['Painelfoto1.jpeg', 'Painelfoto2.png', 'Painelfoto3.jpeg']
+    images: ['assets/images/paineis/painel-contratos-01.jpeg', 'assets/images/paineis/painel-contratos-02.png', 'assets/images/paineis/painel-contratos-03.jpeg']
   }
 };
 
@@ -285,17 +285,17 @@ const galleryNext = document.getElementById('galleryNext');
 const galleryViewport = document.querySelector('.gallery-marquee__viewport');
 
 const galleryImages = [
-  { src: 'WhatsApp Image 2026-09-20 at 13.37.16.jpeg', alt: 'Público assistindo ao Databricks Data + AI World Tour em São Paulo' },
-  { src: 'WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg', alt: 'Vista geral do palco e da plateia no evento Databricks' },
-  { src: 'WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg', alt: 'Networking e comunidade durante o evento Databricks' },
-  { src: 'WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg', alt: 'Cena do estande e ambiente do evento em cenário de tecnologia' },
-  { src: 'WhatsApp Image 2026-09-20 at 13.37.18 (5).jpeg', alt: 'Registro visual do ambiente do evento e dos visitantes' },
-  { src: 'Foto1.jpeg', alt: 'Registro do evento com foco em palestrantes e plateia' },
-  { src: 'Foto 2.jpeg', alt: 'Momento de comunidade e networking no evento' },
-  { src: 'foto3.jpeg', alt: 'Ambiente do evento com iluminação e estrutura de divulgação' },
-  { src: 'foto4.jpeg', alt: 'Cena do evento com presença forte da comunidade e público' },
-  { src: 'foto5.jpeg', alt: 'Registro do ambiente do Data + AI World Tour em São Paulo' },
-  { src: 'foto6.jpeg', alt: 'Detalhe do estande e da experiência do evento' }
+  { src: 'assets/images/eventos/evento-01.jpeg', alt: 'Público assistindo ao Databricks Data + AI World Tour em São Paulo' },
+  { src: 'assets/images/eventos/evento-02.jpeg', alt: 'Vista geral do palco e da plateia no evento Databricks' },
+  { src: 'assets/images/eventos/evento-03.jpeg', alt: 'Networking e comunidade durante o evento Databricks' },
+  { src: 'assets/images/eventos/evento-04.jpeg', alt: 'Cena do estande e ambiente do evento em cenário de tecnologia' },
+  { src: 'assets/images/eventos/evento-05.jpeg', alt: 'Registro visual do ambiente do evento e dos visitantes' },
+  { src: 'assets/images/eventos/evento-06.jpeg', alt: 'Registro do evento com foco em palestrantes e plateia' },
+  { src: 'assets/images/eventos/evento-07.jpeg', alt: 'Momento de comunidade e networking no evento' },
+  { src: 'assets/images/eventos/evento-08.jpeg', alt: 'Ambiente do evento com iluminação e estrutura de divulgação' },
+  { src: 'assets/images/eventos/evento-09.jpeg', alt: 'Cena do evento com presença forte da comunidade e público' },
+  { src: 'assets/images/eventos/evento-10.jpeg', alt: 'Registro do ambiente do Data + AI World Tour em São Paulo' },
+  { src: 'assets/images/eventos/evento-11.jpeg', alt: 'Detalhe do estande e da experiência do evento' }
 ];
 
 let activeGalleryIndex = 0;

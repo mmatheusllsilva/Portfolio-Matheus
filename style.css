@@ -569,7 +569,7 @@ button { font: inherit; }
   display:flex;
   gap:16px;
   width:max-content;
-  animation: marquee-scroll 32s linear infinite;
+  animation: marquee-scroll 70s linear infinite;
 }
 .gallery-marquee:hover .gallery-marquee__track{
   animation-play-state: paused;
