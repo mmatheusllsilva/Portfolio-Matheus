@@ -276,6 +276,101 @@ document.querySelectorAll('.project-card').forEach((card) => {
   });
 });
 
+const galleryTrack = document.getElementById('galleryTrack');
+const galleryPrevScroll = document.getElementById('galleryPrevScroll');
+const galleryNextScroll = document.getElementById('galleryNextScroll');
+const galleryModal = document.getElementById('galleryModal');
+const galleryModalClose = document.getElementById('galleryModalClose');
+const galleryImage = document.getElementById('galleryImage');
+const galleryPrev = document.getElementById('galleryPrev');
+const galleryNext = document.getElementById('galleryNext');
+
+const galleryImages = [
+  'WhatsApp Image 2026-09-20 at 13.37.16.jpeg',
+  'WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg',
+  'WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg',
+  'WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg'
+];
+
+let activeGalleryIndex = 0;
+
+function updateGalleryModal() {
+  galleryImage.src = galleryImages[activeGalleryIndex];
+  galleryImage.alt = `Foto do evento ${activeGalleryIndex + 1}`;
+}
+
+function openGalleryModal(index) {
+  activeGalleryIndex = index;
+  updateGalleryModal();
+  galleryModal.hidden = false;
+}
+
+function closeGalleryModal() {
+  galleryModal.hidden = true;
+}
+
+if (galleryPrevScroll) {
+  galleryPrevScroll.addEventListener('click', () => {
+    galleryTrack.scrollBy({ left: -260, behavior: 'smooth' });
+  });
+}
+
+if (galleryNextScroll) {
+  galleryNextScroll.addEventListener('click', () => {
+    galleryTrack.scrollBy({ left: 260, behavior: 'smooth' });
+  });
+}
+
+document.querySelectorAll('.gallery-item').forEach((item) => {
+  item.addEventListener('click', () => {
+    openGalleryModal(Number(item.dataset.galleryIndex));
+  });
+});
+
+if (galleryPrev) {
+  galleryPrev.addEventListener('click', () => {
+    activeGalleryIndex = (activeGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+    updateGalleryModal();
+  });
+}
+
+if (galleryNext) {
+  galleryNext.addEventListener('click', () => {
+    activeGalleryIndex = (activeGalleryIndex + 1) % galleryImages.length;
+    updateGalleryModal();
+  });
+}
+
+if (galleryModalClose) {
+  galleryModalClose.addEventListener('click', closeGalleryModal);
+}
+
+if (galleryModal) {
+  galleryModal.addEventListener('click', (event) => {
+    if (event.target.hasAttribute('data-gallery-close')) {
+      closeGalleryModal();
+    }
+  });
+}
+
+window.addEventListener('keydown', (event) => {
+  if (galleryModal.hidden) return;
+
+  if (event.key === 'Escape') {
+    closeGalleryModal();
+  }
+
+  if (event.key === 'ArrowRight') {
+    activeGalleryIndex = (activeGalleryIndex + 1) % galleryImages.length;
+    updateGalleryModal();
+  }
+
+  if (event.key === 'ArrowLeft') {
+    activeGalleryIndex = (activeGalleryIndex - 1 + galleryImages.length) % galleryImages.length;
+    updateGalleryModal();
+  }
+});
+
 const chatFab = document.getElementById('chatFab');
 const chatPopup = document.getElementById('chatPopup');
 const chatClose = document.getElementById('chatClose');

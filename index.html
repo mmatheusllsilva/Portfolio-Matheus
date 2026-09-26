@@ -188,28 +188,25 @@
 <!-- GALERIA DE EVENTOS -->
 <section class="section reveal-section" id="galeria">
   <span class="eyebrow">EVENTOS</span>
-  <h2 class="section-title">Registro de eventos e comunidade para ficar expostos aos visitantes</h2>
-  <div class="gallery-grid">
-    <figure class="gallery-item">
-      <img src="WhatsApp Image 2026-09-20 at 13.37.16.jpeg" alt="Público assistindo ao Databricks Data + AI World Tour em São Paulo" loading="lazy">
-      <figcaption>Databricks Data + AI World Tour · São Paulo</figcaption>
-    </figure>
-    <figure class="gallery-item">
-      <img src="WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg" alt="Vista geral do palco e da plateia no evento Databricks" loading="lazy">
-      <figcaption>Palco e comunidade reunida no evento</figcaption>
-    </figure>
-    <figure class="gallery-item">
-      <img src="WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg" alt="Momento de networking e participação na comunidade durante o evento" loading="lazy">
-      <figcaption>Networking e presença da comunidade</figcaption>
-    </figure>
-    <figure class="gallery-item">
-      <img src="WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg" alt="Cena do estande e ambiente do evento em cenário de tecnologia" loading="lazy">
-      <figcaption>Ambiente do evento com foco em inovação</figcaption>
-    </figure>
-    <figure class="gallery-item">
-      <img src="WhatsApp Image 2026-09-20 at 13.37.18 (5).jpeg" alt="Registro do evento com estrutura e público em destaque" loading="lazy">
-      <figcaption>Registro visual do evento e visitantes</figcaption>
-    </figure>
+  <h2 class="section-title">Eventos e Comunidade</h2>
+
+  <div class="gallery-carousel" aria-label="Galeria de fotos do evento Databricks">
+    <button type="button" class="gallery-arrow gallery-arrow-prev" id="galleryPrevScroll" aria-label="Ver fotos anteriores">‹</button>
+    <div class="gallery-track" id="galleryTrack">
+      <button type="button" class="gallery-item" data-gallery-index="0" aria-label="Abrir foto 1 em tela cheia">
+        <img src="WhatsApp Image 2026-09-20 at 13.37.16.jpeg" alt="Público assistindo ao Databricks Data + AI World Tour em São Paulo" loading="lazy">
+      </button>
+      <button type="button" class="gallery-item" data-gallery-index="1" aria-label="Abrir foto 2 em tela cheia">
+        <img src="WhatsApp Image 2026-09-20 at 13.37.17 (1).jpeg" alt="Vista geral do palco e da plateia no evento Databricks" loading="lazy">
+      </button>
+      <button type="button" class="gallery-item" data-gallery-index="2" aria-label="Abrir foto 3 em tela cheia">
+        <img src="WhatsApp Image 2026-09-20 at 13.37.17 (2).jpeg" alt="Networking e comunidade durante o evento Databricks" loading="lazy">
+      </button>
+      <button type="button" class="gallery-item" data-gallery-index="3" aria-label="Abrir foto 4 em tela cheia">
+        <img src="WhatsApp Image 2026-09-20 at 13.37.18 (4).jpeg" alt="Cena do estande e ambiente do evento em cenário de tecnologia" loading="lazy">
+      </button>
+    </div>
+    <button type="button" class="gallery-arrow gallery-arrow-next" id="galleryNextScroll" aria-label="Ver mais fotos">›</button>
   </div>
 </section>
 
@@ -258,6 +255,16 @@
         <ul id="projectModalStack" class="project-modal__stack"></ul>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="gallery-modal" id="galleryModal" hidden>
+  <div class="gallery-modal__backdrop" data-gallery-close></div>
+  <div class="gallery-modal__dialog" role="dialog" aria-modal="true" aria-label="Galeria de fotos do evento">
+    <button type="button" class="project-modal__close" id="galleryModalClose" aria-label="Fechar galeria">✕</button>
+    <button type="button" class="project-modal__nav project-modal__nav--prev" id="galleryPrev" aria-label="Foto anterior">‹</button>
+    <img id="galleryImage" src="" alt="" class="project-modal__image">
+    <button type="button" class="project-modal__nav project-modal__nav--next" id="galleryNext" aria-label="Próxima foto">›</button>
   </div>
 </div>
 
